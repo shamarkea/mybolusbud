@@ -7,568 +7,333 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --red: #c8102e;
-    --red-dark: #9e0c24;
-    --red-soft: #fcebed;
-    --bg: #faf8f6;
-    --card: #ffffff;
-    --ink: #1f2326;
-    --muted: #646a70;
-    --line: #e8e2dc;
-    --warn: #8a4b00;
-    --warn-soft: #fff3e2;
-    --gi-l: #2e7d32; --gi-m: #b06a00; --gi-h: #c62828;
-    --radius: 14px;
-  }
+  :root { --red: #c8102e; --red-dark: #9e0c24; --red-soft: #fcebed; --ink: #1f2326; --muted: #6b7177; --line: #ebe6e1; --warn: #8a4b00; --warn-soft: #fff3e2; }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--ink); font-family: "DM Sans", system-ui, sans-serif; font-size: 15px; line-height: 1.45; }
+  body { margin: 0; background: #faf8f6; color: var(--ink); font-family: "DM Sans", system-ui, sans-serif; font-size: 16px; line-height: 1.5; }
   a { color: var(--red-dark); }
-
-  .band { background: var(--red); color: #fff; position: relative; overflow: hidden; }
-  .band::before, .band::after { content: ""; position: absolute; top: 0; bottom: 0; width: 18px; background: #fff; opacity: .14; }
-  .band::before { left: 0; } .band::after { right: 0; }
-  .band-inner { max-width: 1080px; margin: 0 auto; padding: 30px 20px 26px; display: flex; gap: 18px; align-items: center; }
-  .leaf { width: 58px; height: 58px; flex-shrink: 0; }
-  h1 { font-family: "DM Serif Display", Georgia, serif; font-weight: 400; font-size: 34px; margin: 0 0 2px; letter-spacing: -0.01em; }
-  .band p { margin: 0; opacity: .92; }
-  .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
-  .tags span { background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.35); border-radius: 999px; padding: 2px 10px; font-size: 12.5px; }
-
-  main { max-width: 1080px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 370px; gap: 20px; align-items: start; }
-  @media (max-width: 840px) { main { grid-template-columns: 1fr; } .summary { position: static !important; } .band-inner { align-items: flex-start; } }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; }
-  .card + .card { margin-top: 20px; }
-  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0 0 14px; font-weight: 700; }
-  input, select, button { font: inherit; color: inherit; }
-  input[type=text], input[type=number], select { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
-  input:focus, select:focus, button:focus-visible { outline: 2px solid var(--red); outline-offset: 1px; }
-
-  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
-  .chip { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 5px 12px; cursor: pointer; font-size: 13px; }
-  .chip.on { background: var(--ink); color: #fff; border-color: var(--ink); }
-  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted); margin-bottom: 8px; }
-  .results { max-height: 360px; overflow-y: auto; border-top: 1px solid var(--line); }
-  .food { display: flex; align-items: center; gap: 12px; padding: 10px 4px; border-bottom: 1px solid var(--line); }
-  .food .name { flex: 1; }
-  .serv { color: var(--muted); font-size: 13px; }
-  .food .carbs { font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; text-align: right; font-size: 13.5px; }
-  .gi { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 700; padding: 1px 7px; border-radius: 999px; margin-left: 6px; vertical-align: 1px; }
+  header { background: var(--red); color: #fff; }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 0 20px; }
+  .hero { max-width: 760px; margin: 0 auto; padding: 26px 20px; display: flex; gap: 28px; align-items: center; }
+  .hero-text { flex: 1; min-width: 0; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand svg { width: 36px; height: 36px; flex-shrink: 0; }
+  .tagline { margin: 8px 0 12px; font-size: 17px; }
+  .features { list-style: none; padding: 0; margin: 0 0 16px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .features li { background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.4); border-radius: 999px; padding: 3px 11px; font-size: 13px; }
+  .live { display: inline-block; background: #fff; color: var(--red-dark); font-weight: 700; text-decoration: none; border-radius: 10px; padding: 8px 14px; font-size: 14.5px; }
+  .live:hover { background: var(--red-soft); }
+  .hero-disclaimer { margin: 16px 0 0; display: flex; gap: 12px; align-items: flex-start; background: #fff; color: var(--ink); border-left: 6px solid #f2a900; border-radius: 10px; padding: 12px 14px; font-size: 14px; box-shadow: 0 4px 14px rgba(0,0,0,.15); }
+  .hero-disclaimer strong { display: block; font-size: 16px; letter-spacing: .04em; color: #8f1111; margin-bottom: 2px; }
+  .warn-icon { width: 28px; height: 28px; border-radius: 50%; background: #f2a900; color: #fff; font-weight: 700; font-size: 18px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .shot { width: 220px; border-radius: 12px; border: 3px solid rgba(255,255,255,.85); box-shadow: 0 8px 24px rgba(0,0,0,.2); flex-shrink: 0; }
+  @media (max-width: 640px) { .hero { flex-direction: column; align-items: flex-start; } .shot { width: 60%; max-width: 220px; } }
+  .gi { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 700; padding: 1px 7px; border-radius: 999px; margin-left: 6px; vertical-align: 1px; }
   .gi::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
-  .gi.L { color: var(--gi-l); background: #e8f3e9; } .gi.M { color: var(--gi-m); background: #fdf1df; } .gi.H { color: var(--gi-h); background: #fbe7e7; }
-  .add { border: none; background: var(--red-soft); color: var(--red-dark); width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: 700; flex-shrink: 0; }
-  .add:hover { background: var(--red); color: #fff; }
-  .empty { color: var(--muted); padding: 16px 4px; }
-  .custom { display: grid; grid-template-columns: 1fr 112px 112px auto; gap: 8px; }
-  @media (max-width: 520px) { .custom { grid-template-columns: 1fr 1fr; } .custom input:first-child { grid-column: 1 / -1; } }
-  .primary { border: none; background: var(--red); color: #fff; border-radius: 10px; padding: 10px 16px; cursor: pointer; font-weight: 500; }
-  .primary:hover { background: var(--red-dark); }
-  .hint { color: var(--muted); font-size: 13px; margin: 8px 0 0; }
+  .gi.L { color: #2e7d32; background: #e8f3e9; } .gi.M { color: #b06a00; background: #fdf1df; } .gi.H { color: #c62828; background: #fbe7e7; }
+  h1 { font-family: "DM Serif Display", Georgia, serif; font-weight: 400; font-size: 28px; margin: 0; }
+  main.wrap { padding-top: 24px; padding-bottom: 8px; }
+  .step { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 20px; margin-bottom: 16px; }
+  .step h2 { font-size: 17px; margin: 0 0 14px; display: flex; align-items: center; gap: 10px; }
+  .num { width: 26px; height: 26px; border-radius: 50%; background: var(--red); color: #fff; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  input, select, button { font: inherit; color: inherit; }
+  input[type=text], input[type=number], select { padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+  input:focus, select:focus, button:focus-visible { outline: 2px solid var(--red); outline-offset: 1px; }
+  .small { font-size: 13.5px; color: var(--muted); margin: 6px 0 0; }
 
-  .meal-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
-  .meal-item:last-child { border-bottom: none; }
-  .meal-item .name { flex: 1; min-width: 0; }
-  .qty { display: flex; align-items: center; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
-  .qty button { border: none; background: #fff; width: 28px; height: 30px; cursor: pointer; font-size: 16px; }
-  .qty button:hover { background: var(--red-soft); }
-  .qty span { min-width: 34px; text-align: center; font-variant-numeric: tabular-nums; font-size: 14px; }
-  .meal-item .g { width: 58px; text-align: right; font-variant-numeric: tabular-nums; font-weight: 500; }
-  .remove { border: none; background: none; color: var(--muted); cursor: pointer; font-size: 18px; padding: 0 4px; }
-  .remove:hover { color: var(--red); }
+  .consent { display: flex; gap: 10px; align-items: flex-start; background: var(--warn-soft); color: var(--warn); border-radius: 10px; padding: 12px; font-size: 14px; cursor: pointer; }
+  .consent input { margin-top: 4px; accent-color: var(--red); width: 16px; height: 16px; flex-shrink: 0; }
+  .consent b { color: var(--ink); }
+  .gated.off { opacity: .4; pointer-events: none; }
+  .line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  .line input { width: 76px; text-align: center; }
+  .line select { padding: 8px 10px; }
+  details { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px; }
+  summary { cursor: pointer; font-weight: 500; color: var(--red-dark); }
+  .corr { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
+  .corr label { font-size: 13px; color: var(--muted); }
+  .corr input { width: 100%; margin-top: 4px; }
 
-  .summary { position: sticky; top: 20px; }
-  .consent { background: var(--warn-soft); color: var(--warn); border-radius: 12px; padding: 14px; margin-bottom: 20px; font-size: 13.5px; }
-  .consent p { margin: 6px 0 12px; }
-  .check { display: flex; gap: 8px; align-items: flex-start; font-size: 13.5px; cursor: pointer; }
-  .check input { margin-top: 3px; accent-color: var(--red); }
-  .consent .check { color: var(--ink); font-weight: 500; }
-  .gated.disabled { opacity: 0.4; pointer-events: none; }
-  .ratio { display: flex; align-items: center; gap: 8px; }
-  .ratio input { width: 80px; text-align: center; font-size: 17px; font-weight: 500; }
-  label.field { display: block; margin-top: 14px; font-size: 13px; color: var(--muted); }
-  label.field select, label.field input { margin-top: 6px; color: var(--ink); }
-  .section { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
-  .totals { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
-  .row { display: flex; justify-content: space-between; margin-bottom: 6px; gap: 10px; }
-  .row span:last-child { font-variant-numeric: tabular-nums; font-weight: 500; text-align: right; }
-  .row.strong span { font-weight: 700; }
-  .dose { margin-top: 14px; background: var(--red-soft); border-radius: 12px; padding: 18px; text-align: center; }
-  .dose .label { font-size: 13px; color: var(--red-dark); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
-  .dose .num { font-family: "DM Serif Display", Georgia, serif; font-size: 56px; line-height: 1.05; color: var(--red-dark); font-variant-numeric: tabular-nums; }
-  .dose .math { font-size: 13px; color: var(--muted); margin-top: 4px; }
-  .warning { background: var(--warn-soft); color: var(--warn); border-radius: 10px; padding: 10px 12px; font-size: 13px; margin-top: 12px; }
-  .danger { background: #fde8e8; color: #8f1111; border: 1px solid #f3b9b9; border-radius: 10px; padding: 10px 12px; font-size: 13px; margin-top: 12px; font-weight: 500; }
-  .iob { margin-top: 18px; background: #f3f1ee; border-radius: 10px; padding: 12px; font-size: 13px; }
-  .iob strong { display: block; margin-bottom: 4px; }
-  .actions { display: flex; gap: 8px; margin-top: 14px; }
-  .actions button { flex: 1; }
-  .ghost { border: 1px solid var(--line); background: #fff; border-radius: 10px; padding: 10px 16px; cursor: pointer; }
-  .disclaimer { color: var(--muted); font-size: 12.5px; margin-top: 14px; }
+  .pick { display: flex; gap: 8px; }
+  .pick select { flex: 1; min-width: 0; padding: 11px 12px; }
+  .search input { width: 100%; }
+  .results { border: 1px solid var(--line); border-radius: 10px; margin-top: 6px; overflow: hidden; }
+  .results:empty { display: none; }
+  .res { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 10px 12px; border: none; border-bottom: 1px solid var(--line); background: #fff; cursor: pointer; text-align: left; }
+  .res:last-child { border-bottom: none; }
+  .res:hover { background: var(--red-soft); }
+  .res span:last-child { color: var(--muted); font-size: 14px; white-space: nowrap; margin-left: 10px; }
+  .manual { display: flex; gap: 8px; margin-top: 10px; }
+  .manual input { width: 0; flex: 1; }
+  .btn { border: none; background: var(--red); color: #fff; border-radius: 10px; padding: 10px 16px; cursor: pointer; font-weight: 500; }
+  .btn:hover { background: var(--red-dark); }
+  .meal { margin-top: 14px; }
+  .item { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line); }
+  .item .n { flex: 1; min-width: 0; }
+  .item .s { display: block; font-size: 13px; color: var(--muted); }
+  .qty { display: flex; align-items: center; gap: 2px; }
+  .qty button, .x { border: 1px solid var(--line); background: #fff; width: 28px; height: 28px; border-radius: 8px; cursor: pointer; }
+  .qty span { min-width: 28px; text-align: center; font-size: 14px; }
+  .item .g { width: 54px; text-align: right; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .x { border: none; color: var(--muted); font-size: 18px; }
 
-  .resources { max-width: 1080px; margin: 0 auto; padding: 0 20px 20px; }
-  .resources h2.big { font-family: "DM Serif Display", Georgia, serif; font-size: 26px; text-transform: none; letter-spacing: 0; color: var(--ink); font-weight: 400; margin: 10px 0 4px; }
-  .resources > p { color: var(--muted); margin: 0 0 16px; }
-  .res-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
-  .res { background: #fff; border: 1px solid var(--line); border-top: 4px solid var(--red); border-radius: var(--radius); padding: 16px 18px; display: flex; flex-direction: column; }
-  .res .org { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--red-dark); }
-  .res h3 { margin: 4px 0 6px; font-size: 17px; }
-  .res p { margin: 0 0 10px; font-size: 13.5px; color: #3d4247; flex: 1; }
-  .status { font-size: 12.5px; border-radius: 8px; padding: 6px 9px; margin-bottom: 10px; }
-  .status.ok { background: #e8f3e9; color: #1f5e23; }
-  .status.old { background: var(--warn-soft); color: var(--warn); }
-  .res a.go { font-weight: 500; font-size: 14px; }
-  .helpline { margin-top: 16px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 18px; font-size: 14px; }
-  footer { max-width: 1080px; margin: 0 auto; padding: 10px 20px 40px; color: var(--muted); font-size: 12.5px; }
+  .result { text-align: center; }
+  .dose { font-family: "DM Serif Display", Georgia, serif; font-size: 72px; line-height: 1; color: var(--red-dark); margin: 6px 0 2px; font-variant-numeric: tabular-nums; }
+  .unit { color: var(--muted); }
+  .math { font-size: 14px; color: var(--muted); margin-top: 10px; }
+  .alert { text-align: left; border-radius: 10px; padding: 10px 12px; font-size: 14px; margin-top: 12px; }
+  .alert.warn { background: var(--warn-soft); color: var(--warn); }
+  .alert.danger { background: #fde8e8; color: #8f1111; font-weight: 500; }
+  .note { font-size: 13.5px; color: var(--muted); text-align: left; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+
+  .links { font-size: 14px; }
+  .links h3 { font-size: 15px; margin: 0 0 8px; }
+  .links ul { margin: 0; padding-left: 18px; }
+  .links li { margin: 4px 0; }
+  footer { font-size: 12.5px; color: var(--muted); padding-bottom: 36px; }
 </style>
 </head>
 <body>
-<div class="band">
-  <div class="band-inner">
-    <svg class="leaf" viewBox="0 0 100 100" aria-hidden="true"><polygon fill="#fff" points="50,5 57,20 66,15 63,38 76,26 80,33 93,30 88,45 95,50 75,63 78,72 55,68 53,95 47,95 45,68 22,72 25,63 5,50 12,45 7,30 20,33 24,26 37,38 34,15 43,20"/></svg>
-    <div>
-      <h1>MyBolusBud</h1>
-      <p>Add what you're eating, enter the settings from your care team, and see the mealtime dose.</p>
-      <div class="tags"><span>mmol/L</span><span>Millilitres</span><span>Fibre subtracted</span><span>Glycemic index colours</span></div>
-    </div>
-  </div>
-</div>
-
-<main>
-  <section>
-    <div class="card">
-      <h2>Find food or drink</h2>
-      <input type="text" id="q" placeholder="Search, e.g. banana, wild rice, maple syrup…" autocomplete="off" aria-label="Search foods">
-      <div class="chips" id="chips"></div>
-      <div class="legend">
-        <span>Glycemic index (Diabetes Canada):</span>
-        <span class="gi L">Low</span><span class="gi M">Medium</span><span class="gi H">High</span>
-        <span>No badge = not rated</span>
+<header>
+  <div class="hero">
+    <div class="hero-text">
+      <div class="brand">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><polygon fill="#fff" points="50,5 57,20 66,15 63,38 76,26 80,33 93,30 88,45 95,50 75,63 78,72 55,68 53,95 47,95 45,68 22,72 25,63 5,50 12,45 7,30 20,33 24,26 37,38 34,15 43,20"/></svg>
+        <h1>MyBolusBud</h1>
       </div>
-      <div class="results" id="results" aria-live="polite"></div>
+      <p class="tagline">A Canadian carb-to-insulin calculator for people living with diabetes.</p>
+      <ul class="features">
+        <li>Carb Counting</li>
+        <li>Correction Dose</li>
+        <li>Diabetes Canada GI Badges</li>
+      </ul>
+      <a class="live" id="liveLink" href="https://claude.ai/artifact/XpoLwoQdPrB3hcUZ263BC5">Open the live app →</a>
+      <div class="hero-disclaimer" role="note">
+        <span class="warn-icon" aria-hidden="true">!</span>
+        <div><strong>NOT MEDICAL ADVICE</strong>This tool does not replace your doctor or diabetes care team. They must set your ratio, target and correction factor.</div>
+      </div>
     </div>
+    <img class="shot" src="data:image/jpeg;base64,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" alt="Screenshot of MyBolusBud showing a meal of apple, brown rice and milk with a dose of 8.5 units">
+  </div>
+</header>
 
-    <div class="card">
-      <h2>Add from a Nutrition Facts table</h2>
-      <form class="custom" id="customForm">
-        <input type="text" id="cName" placeholder="Food name" aria-label="Custom food name">
-        <input type="number" id="cCarbs" placeholder="Carbs (g)" min="0" step="0.1" aria-label="Carbohydrate in grams">
-        <input type="number" id="cFibre" placeholder="Fibre (g)" min="0" step="0.1" aria-label="Fibre in grams">
-        <button class="primary" type="submit">Add</button>
-      </form>
-      <p class="hint">Use the "Carbohydrate" and "Fibre" lines from the label. Check the serving size at the top, and adjust if you're eating more or less.</p>
-    </div>
-
-    <div class="card">
-      <h2>Your meal</h2>
-      <div id="meal"></div>
+<main class="wrap">
+  <section class="step">
+    <h2><span class="num">1</span>Your settings</h2>
+    <label class="consent">
+      <input type="checkbox" id="ack">
+      <span><b>My medical team set or approved these numbers.</b> Your ratio, target and correction factor must come from your doctor or diabetes care team.</span>
+    </label>
+    <div id="settings" class="gated off">
+      <div class="line">
+        1 unit for every <input type="number" id="ratio" value="10" min="1" step="0.5" aria-label="Grams of carbs per unit"> g of carbs
+      </div>
+      <div class="line">
+        Round to <select id="round" aria-label="Rounding">
+          <option value="1">1 unit</option>
+          <option value="0.5" selected>0.5 unit</option>
+          <option value="0.1">0.1 unit</option>
+        </select>
+      </div>
+      <details id="corrBox">
+        <summary>Add a correction for high blood sugar</summary>
+        <div class="corr">
+          <label>Blood sugar now<input type="number" id="bg" min="0" step="0.1" placeholder="mmol/L"></label>
+          <label>Target<input type="number" id="target" min="0" step="0.1" value="6"></label>
+          <label>Correction factor<input type="number" id="cf" min="0" step="0.1" value="4"></label>
+        </div>
+        <p class="small">Correction factor = how much 1 unit lowers your blood sugar, in mmol/L.</p>
+      </details>
     </div>
   </section>
 
-  <aside class="summary card">
-    <div class="consent">
-      <strong>Medical team approval required</strong>
-      <p>Every setting in this panel (your insulin-to-carb ratio, target blood sugar, correction factor and how long your insulin stays active) must be set or approved by your doctor or diabetes care team. Do not guess or copy someone else's numbers.</p>
-      <label class="check"><input type="checkbox" id="ack"> My medical team has set or approved my ratio, target and correction factor</label>
+  <section class="step">
+    <h2><span class="num">2</span>What are you eating?</h2>
+    <div class="pick">
+      <select id="food" aria-label="Choose a food or drink"><option value="">Choose a food or drink…</option></select>
+      <button class="btn" id="addFood" type="button">Add</button>
     </div>
+    <p class="small" style="margin:10px 0 0">Not in the list? Enter the carbs from the Nutrition Facts table:</p>
+    <form class="manual" id="manual">
+      <input type="number" id="mCarbs" min="0" step="0.1" placeholder="Carbs from label (g)" aria-label="Carbs from label">
+      <input type="number" id="mFibre" min="0" step="0.1" placeholder="Fibre (g)" aria-label="Fibre from label">
+      <button class="btn" type="submit">Add</button>
+    </form>
+    <p class="small" style="margin-top:10px">GI (glycemic index, from Diabetes Canada): <span class="gi L">Low</span> choose most often, <span class="gi M">Medium</span> less often, <span class="gi H">High</span> least often.</p>
+    <div class="meal" id="meal"></div>
+  </section>
 
-    <div id="ratioFields" class="gated disabled">
-      <h2>Your ratio</h2>
-      <p class="hint" style="margin:-6px 0 10px">Set by your health team.</p>
-      <div class="ratio">
-        <span>1 unit for every</span>
-        <input type="number" id="ratio" value="10" min="1" step="0.5" aria-label="Grams of carbs per unit of insulin">
-        <span>g carbs</span>
-      </div>
-      <label class="field">Round dose to
-        <select id="round">
-          <option value="1">Nearest 1 unit (most pens)</option>
-          <option value="0.5" selected>Nearest 0.5 unit (half-unit pens)</option>
-          <option value="0.1">Nearest 0.1 unit (pumps)</option>
-          <option value="0.05">Nearest 0.05 unit (pumps)</option>
-        </select>
-      </label>
-      <label class="check" style="margin-top:14px"><input type="checkbox" id="fibre" checked> Subtract fibre (Diabetes Canada's carb counting method). Ask your care team which method they want you to use.</label>
+  <section class="step result" aria-live="polite">
+    <h2 style="justify-content:center"><span class="num">3</span>Your dose</h2>
+    <div class="dose" id="dose">–</div>
+    <div class="unit">units</div>
+    <div class="math" id="math"></div>
+    <div id="alerts"></div>
+    <div class="alert warn" style="text-align:center"><strong>Not medical advice.</strong> Check any dose against your care team's plan before you take it.</div>
+    <p class="note">Insulin from an earlier dose can keep working for 2 to 6 hours (your health team will tell you how long). This calculator doesn't subtract it. Fibre is subtracted from carbs, as Diabetes Canada recommends.</p>
+  </section>
 
-      <div class="section">
-        <h2>Correction (optional)</h2>
-        <p class="hint" style="margin:-6px 0 4px">Target and correction factor are set by your health team. Leave blood sugar blank to skip.</p>
-        <label class="field">Current blood sugar (mmol/L)
-          <input type="number" id="bg" min="0" step="0.1" placeholder="e.g. 10">
-        </label>
-        <label class="field">Target blood sugar (mmol/L)
-          <input type="number" id="target" min="0" step="0.1" value="6">
-        </label>
-        <label class="field">Correction factor: 1 unit lowers blood sugar by (mmol/L)
-          <input type="number" id="cf" min="0" step="0.1" value="4">
-        </label>
-      </div>
-    </div>
-
-    <div class="iob">
-      <strong>Insulin on board</strong>
-      Insulin from an earlier dose usually keeps working for 2 to 6 hours. Your health team will tell you how long yours lasts. This calculator does not subtract it, so taking another dose too soon can stack insulin and cause a low.
-    </div>
-
-    <div class="totals">
-      <div class="row"><span>Total carbohydrate</span><span id="tCarbs">0 g</span></div>
-      <div class="row"><span>Fibre</span><span id="tFibre">0 g</span></div>
-      <div class="row strong"><span id="tUsedLabel">Carbs counted</span><span id="tUsed">0 g</span></div>
-      <div class="row"><span>Carb dose</span><span id="tCarbDose">–</span></div>
-      <div class="row"><span>Correction dose</span><span id="tCorr">–</span></div>
-      <div class="dose">
-        <div class="label">Total dose</div>
-        <div class="num" id="dose">–</div>
-        <div class="math" id="math">units</div>
-      </div>
-      <div id="warnings"></div>
-      <div class="actions">
-        <button class="primary" id="copy">Copy summary</button>
-        <button class="ghost" id="clear">Clear meal</button>
-      </div>
-    </div>
-    <p class="disclaimer">This tool is not medical advice and does not replace your healthcare provider. Your insulin-to-carb ratio, target and correction factor must be set by your doctor or diabetes care team. It does not account for insulin still active from earlier doses, exercise, illness or alcohol. Carb and fibre values are typical estimates; portions vary.</p>
-  </aside>
+  <section class="step links">
+    <h3>Canadian resources</h3>
+    <ul>
+      <li><a href="https://diabetes.ca/managing-my-diabetes/tools---resources/basic-carbohydrate-counting">Basic Carbohydrate Counting</a> (Diabetes Canada)</li>
+      <li><a href="https://www.diabetes.ca/resources/tools-resources/the-glycemic-index-(gi)">Glycemic Index Food Guide</a> (Diabetes Canada)</li>
+      <li><a href="https://www.diabetes.ca/DiabetesCanadaWebsite/media/Managing-My-Diabetes/Tools%20and%20Resources/lows-and-highs-blood-sugar-levels.pdf?ext=.pdf">Lows and Highs: Blood Sugar Levels</a> (Diabetes Canada)</li>
+      <li><a href="https://food-nutrition.canada.ca/cnf-fce">Canadian Nutrient File</a> (Health Canada)</li>
+      <li><a href="https://food-guide.canada.ca/en/">Canada's Food Guide</a> (Health Canada)</li>
+      <li><a href="https://www.sac-isc.gc.ca/eng/1569960595332/1569960634063">Diabetes in First Nations and Inuit Communities</a> (Indigenous Services Canada)</li>
+    </ul>
+    <p class="small">Diabetes Canada: 1-800-BANTING (226-8464)</p>
+  </section>
 </main>
 
-<section class="resources" aria-labelledby="resTitle">
-  <h2 class="big" id="resTitle">Canadian resources</h2>
-  <p>Checked November 2026 against the Diabetes Canada and Government of Canada websites.</p>
-  <div class="res-grid">
-    <div class="res">
-      <div class="org">Diabetes Canada</div>
-      <h3>Basic Carbohydrate Counting</h3>
-      <p>Five steps to carb counting: choosing foods, finding carbs, setting goals with a dietitian, reading the Nutrition Facts table (including subtracting fibre) and tracking how foods affect your blood sugar.</p>
-      <div class="status ok">Current: 07/25 edition, reflects the 2023 Clinical Practice Guidelines.</div>
-      <a class="go" href="https://diabetes.ca/managing-my-diabetes/tools---resources/basic-carbohydrate-counting">Open on diabetes.ca →</a>
-    </div>
-    <div class="res">
-      <div class="org">Diabetes Canada</div>
-      <h3>Glycemic Index Food Guide</h3>
-      <p>Low (55 or less), medium (56 to 69) and high (70 or more) GI food lists, swap ideas and the balanced plate method. The GI badges in this calculator come from this guide.</p>
-      <div class="status ok">Current: 07/25 edition, reflects the 2023 Clinical Practice Guidelines.</div>
-      <a class="go" href="https://www.diabetes.ca/resources/tools-resources/the-glycemic-index-(gi)">Open on diabetes.ca →</a>
-    </div>
-    <div class="res">
-      <div class="org">Diabetes Canada</div>
-      <h3>Lows and Highs: Blood Sugar Levels</h3>
-      <p>How to treat a low: 15 g of fast-acting carbohydrate (such as glucose tablets or 150 mL of juice or regular pop), wait 15 minutes, recheck, and repeat until you're above 4 mmol/L.</p>
-      <div class="status ok">Diabetes Canada handout, available on diabetes.ca.</div>
-      <a class="go" href="https://www.diabetes.ca/DiabetesCanadaWebsite/media/Managing-My-Diabetes/Tools%20and%20Resources/lows-and-highs-blood-sugar-levels.pdf?ext=.pdf">Open PDF →</a>
-    </div>
-    <div class="res">
-      <div class="org">Health Canada · Indigenous Services Canada</div>
-      <h3>Diabetes Factsheets (Aboriginal Diabetes Initiative)</h3>
-      <p>Six factsheets on what diabetes is, risk factors, signs of type 2, being active, healthy eating and smoking, written for First Nations, Inuit and Métis communities.</p>
-      <div class="status old">Dated: published 2011. The program is now run by Indigenous Services Canada, and some advice has been replaced by Canada's Food Guide (2019) and the Canadian 24-Hour Movement Guidelines.</div>
-      <a class="go" href="https://www.sac-isc.gc.ca/eng/1569960595332/1569960634063">Current Indigenous Services Canada page →</a>
-    </div>
-    <div class="res">
-      <div class="org">Health Canada</div>
-      <h3>Canadian Nutrient File</h3>
-      <p>Health Canada's food composition database for foods sold in Canada. Use it to look up carbohydrate and fibre for foods without a label.</p>
-      <div class="status ok">Current: online search still available while the 2026 dataset is rolled out.</div>
-      <a class="go" href="https://food-nutrition.canada.ca/cnf-fce">Search foods →</a>
-    </div>
-    <div class="res">
-      <div class="org">Health Canada</div>
-      <h3>Canada's Food Guide</h3>
-      <p>Healthy eating advice for all Canadians, including the plate model: half vegetables and fruits, a quarter whole grains, a quarter protein foods.</p>
-      <div class="status ok">Current edition: 2019.</div>
-      <a class="go" href="https://food-guide.canada.ca/en/">Open the Food Guide →</a>
-    </div>
-  </div>
-  <div class="helpline"><strong>Diabetes Canada:</strong> 1-800-BANTING (1-800-226-8464) · info@diabetes.ca · diabetes.ca</div>
-</section>
-
-<footer>Not affiliated with or endorsed by Diabetes Canada, Health Canada or Indigenous Services Canada. Carb and fibre values are typical estimates using Canadian metric servings (1 cup = 250 mL); check labels or the Canadian Nutrient File. Glycemic index categories are from Diabetes Canada's Glycemic Index Food Guide (07/25). Not medical advice.</footer>
+<footer class="wrap"><strong>Not medical advice.</strong> Your doctor or diabetes care team must set your ratio, target and correction factor. Carb values are typical estimates; check food labels. Not affiliated with Diabetes Canada, Health Canada or Indigenous Services Canada.</footer>
 
 <script>
-// [name, serving, carbs g, fibre g, category, GI: L/M/H or ""]
-const FOODS = [
-  ["Apple", "1 medium", 25, 4.4, "Fruit", "L"],
-  ["Banana, ripe", "1 medium", 27, 3.1, "Fruit", "M"],
-  ["Orange", "1 medium", 15, 3.1, "Fruit", "L"],
-  ["Pear", "1 medium", 27, 5.5, "Fruit", "L"],
-  ["Grapes", "250 mL (1 cup)", 27, 1.4, "Fruit", "M"],
-  ["Strawberries", "250 mL (1 cup), sliced", 12, 3, "Fruit", "L"],
-  ["Blueberries", "250 mL (1 cup)", 21, 3.6, "Fruit", "L"],
-  ["Watermelon", "250 mL (1 cup), diced", 12, 0.6, "Fruit", "M"],
-  ["Mango", "250 mL (1 cup), sliced", 25, 2.6, "Fruit", "L"],
-  ["Raisins", "60 mL (1/4 cup)", 31, 1.5, "Fruit", "M"],
-
-  ["White bread", "1 slice", 13, 0.8, "Grains", "H"],
-  ["Whole wheat bread", "1 slice", 12, 2, "Grains", "H"],
-  ["Pumpernickel bread", "1 slice", 15, 2, "Grains", "L"],
-  ["Bagel, plain", "1 medium", 48, 2, "Grains", "H"],
-  ["English muffin, white", "1 whole", 26, 2, "Grains", "H"],
-  ["English muffin, whole wheat", "1 whole", 27, 4.4, "Grains", "L"],
-  ["White rice, long grain, cooked", "250 mL (1 cup)", 45, 0.6, "Grains", "M"],
-  ["Jasmine rice, cooked", "250 mL (1 cup)", 45, 0.6, "Grains", "H"],
-  ["Brown rice, cooked", "250 mL (1 cup)", 46, 3.5, "Grains", "L"],
-  ["Wild rice, cooked", "250 mL (1 cup)", 35, 3, "Grains", "L"],
-  ["Pasta, al dente", "250 mL (1 cup)", 43, 2.5, "Grains", "L"],
-  ["Quinoa, cooked", "250 mL (1 cup)", 39, 5, "Grains", "L"],
-  ["Barley, cooked", "250 mL (1 cup)", 44, 6, "Grains", "L"],
-  ["Oatmeal, large flake, cooked", "250 mL (1 cup)", 27, 4, "Grains", "M"],
-  ["Oatmeal, instant", "1 plain packet", 19, 2.5, "Grains", "H"],
-  ["Red River Cereal, cooked", "175 mL (3/4 cup)", 26, 5, "Grains", "L"],
-  ["Bannock", "1 piece (about 60 g)", 30, 1.5, "Grains", ""],
-  ["Flour tortilla", "1 (8 inch)", 25, 1.5, "Grains", "L"],
-  ["Corn tortilla", "1 (6 inch)", 11, 1.5, "Grains", "L"],
-  ["Naan", "1 piece", 45, 2, "Grains", "H"],
-  ["Pancake", "1 (6 inch)", 22, 1, "Grains", ""],
-  ["Croissant", "1 medium", 26, 1.5, "Grains", ""],
-  ["Hamburger bun", "1 bun", 22, 1, "Grains", ""],
-  ["Cheerios", "250 mL (1 cup)", 20, 3, "Grains", "H"],
-  ["Corn flakes", "250 mL (1 cup)", 24, 1, "Grains", "H"],
-  ["Granola", "125 mL (1/2 cup)", 32, 4, "Grains", "M"],
-  ["Soda crackers", "5 crackers", 11, 0.4, "Grains", "H"],
-
-  ["Potato, baked", "1 medium", 37, 4, "Starchy veg & beans", "H"],
-  ["Sweet potato, boiled", "1 medium", 24, 4, "Starchy veg & beans", "L"],
-  ["French fries", "1 medium serving", 45, 4, "Starchy veg & beans", "M"],
-  ["Corn on the cob", "1 medium ear", 19, 2, "Starchy veg & beans", "M"],
-  ["Green peas", "250 mL (1 cup)", 21, 7, "Starchy veg & beans", "L"],
-  ["Black beans, cooked", "250 mL (1 cup)", 41, 15, "Starchy veg & beans", "L"],
-  ["Chickpeas, cooked", "250 mL (1 cup)", 45, 12.5, "Starchy veg & beans", "L"],
-  ["Lentils, cooked", "250 mL (1 cup)", 40, 15.6, "Starchy veg & beans", "L"],
-  ["Hummus", "30 mL (2 tbsp)", 4, 1.8, "Starchy veg & beans", "L"],
-  ["Carrots, cooked", "250 mL (1 cup)", 13, 4.7, "Starchy veg & beans", "L"],
-  ["Broccoli, cooked", "250 mL (1 cup)", 11, 5, "Starchy veg & beans", ""],
-  ["Salad greens", "250 mL (1 cup)", 1, 0.5, "Starchy veg & beans", ""],
-
-  ["Milk, 1% or 2%", "250 mL (1 cup)", 12, 0, "Dairy & alternatives", "L"],
-  ["Chocolate milk, 1% or 2%", "250 mL (1 cup)", 26, 2, "Dairy & alternatives", "L"],
-  ["Soy beverage, unsweetened", "250 mL (1 cup)", 4, 1, "Dairy & alternatives", "L"],
-  ["Oat beverage, unsweetened", "250 mL (1 cup)", 16, 2, "Dairy & alternatives", "M"],
-  ["Plain yogurt", "175 mL (3/4 cup)", 13, 0, "Dairy & alternatives", "L"],
-  ["Greek yogurt, plain", "175 mL (3/4 cup)", 6, 0, "Dairy & alternatives", "L"],
-  ["Flavoured yogurt", "175 mL (3/4 cup)", 25, 0, "Dairy & alternatives", ""],
-  ["Ice cream", "125 mL (1/2 cup)", 16, 0.5, "Dairy & alternatives", ""],
-  ["Cheddar cheese", "50 g", 0, 0, "Dairy & alternatives", "L"],
-
-  ["Cola", "1 can (355 mL)", 39, 0, "Drinks", ""],
-  ["Orange juice", "250 mL (1 cup)", 26, 0.5, "Drinks", ""],
-  ["Apple juice", "250 mL (1 cup)", 28, 0, "Drinks", ""],
-  ["Sports drink", "1 bottle (591 mL)", 34, 0, "Drinks", ""],
-  ["Latte, 2% milk", "473 mL (16 oz)", 18, 0, "Drinks", ""],
-  ["Beer, regular", "1 can (355 mL)", 13, 0, "Drinks", ""],
-  ["Wine", "150 mL glass", 4, 0, "Drinks", ""],
-  ["Diet pop", "1 can (355 mL)", 0, 0, "Drinks", ""],
-  ["Black coffee or tea", "250 mL (1 cup)", 0, 0, "Drinks", ""],
-
-  ["Cheese pizza", "1 slice (14 inch pie)", 36, 2.5, "Meals & snacks", ""],
-  ["California roll", "8 pieces", 38, 2, "Meals & snacks", ""],
-  ["Potato chips", "28 g (about 15 chips)", 15, 1, "Meals & snacks", ""],
-  ["Pretzels", "28 g", 23, 1, "Meals & snacks", "H"],
-  ["Popcorn, air-popped", "750 mL (3 cups)", 18, 3.5, "Meals & snacks", "L"],
-  ["Granola bar", "1 bar", 17, 1.5, "Meals & snacks", ""],
-  ["Nuts or seeds", "60 mL (1/4 cup)", 7, 3.5, "Meals & snacks", "L"],
-  ["Peanut butter", "30 mL (2 tbsp)", 7, 2, "Meals & snacks", ""],
-  ["Egg", "1 large", 0.4, 0, "Meals & snacks", ""],
-  ["Chicken, meat or fish", "any portion", 0, 0, "Meals & snacks", ""],
-
-  ["Maple syrup", "15 mL (1 tbsp)", 13, 0, "Sweets", ""],
-  ["Honey", "15 mL (1 tbsp)", 17, 0, "Sweets", ""],
-  ["Jam", "15 mL (1 tbsp)", 14, 0, "Sweets", ""],
-  ["Sugar", "5 mL (1 tsp)", 4, 0, "Sweets", ""],
-  ["Chocolate chip cookie", "1 medium", 10, 0.5, "Sweets", ""],
-  ["Glazed doughnut", "1 doughnut", 22, 0.7, "Sweets", ""],
-  ["Blueberry muffin", "1 large", 54, 1.5, "Sweets", ""],
-  ["Milk chocolate bar", "1 bar (43 g)", 26, 1.5, "Sweets", ""],
-  ["Glucose tablet", "1 tablet (check package, usually 4 g)", 4, 0, "Sweets", ""],
-];
-const CATS = ["All", ...new Set(FOODS.map(f => f[4]))];
+// group: [[name, serving, carbs g, fibre g], ...]
+const GROUPS = {
+  "Fruit": [["Apple","1 medium",25,4.4],["Banana","1 medium",27,3.1],["Orange","1 medium",15,3.1],["Pear","1 medium",27,5.5],
+    ["Grapes","250 mL",27,1.4],["Strawberries","250 mL",12,3],["Blueberries","250 mL",21,3.6],["Watermelon","250 mL",12,0.6],
+    ["Mango","250 mL",25,2.6],["Raisins","60 mL",31,1.5]],
+  "Breads & cereals": [["White bread","1 slice",13,0.8],["Whole wheat bread","1 slice",12,2],["Bagel","1 medium",48,2],["English muffin","1 whole",26,2],
+    ["Bannock","1 piece (60 g)",30,1.5],["Flour tortilla","8 inch",25,1.5],["Naan","1 piece",45,2],["Pancake","6 inch",22,1],
+    ["Hamburger bun","1 bun",22,1],["Cheerios","250 mL",20,3],["Corn flakes","250 mL",24,1],["Granola","125 mL",32,4],
+    ["Oatmeal, cooked","250 mL",27,4],["Red River Cereal, cooked","175 mL",26,5],["Soda crackers","5 crackers",11,0.4]],
+  "Rice, pasta & grains": [["White rice, cooked","250 mL",45,0.6],["Brown rice, cooked","250 mL",46,3.5],["Wild rice, cooked","250 mL",35,3],
+    ["Pasta, cooked","250 mL",43,2.5],["Quinoa, cooked","250 mL",39,5]],
+  "Potatoes, vegetables & beans": [["Potato, baked","1 medium",37,4],["Sweet potato","1 medium",24,4],["French fries","1 medium serving",45,4],
+    ["Corn on the cob","1 ear",19,2],["Green peas","250 mL",21,7],["Carrots, cooked","250 mL",13,4.7],["Black beans","250 mL",41,15],
+    ["Chickpeas","250 mL",45,12.5],["Lentils","250 mL",40,15.6],["Hummus","30 mL",4,1.8]],
+  "Milk & yogurt": [["Milk","250 mL",12,0],["Chocolate milk","250 mL",26,2],["Soy beverage, unsweetened","250 mL",4,1],
+    ["Plain yogurt","175 mL",13,0],["Greek yogurt, plain","175 mL",6,0],["Flavoured yogurt","175 mL",25,0],["Ice cream","125 mL",16,0.5]],
+  "Drinks": [["Cola","355 mL can",39,0],["Orange juice","250 mL",26,0.5],["Apple juice","250 mL",28,0],["Sports drink","591 mL",34,0],
+    ["Latte","473 mL",18,0],["Beer","355 mL",13,0],["Wine","150 mL",4,0]],
+  "Meals & snacks": [["Cheese pizza","1 slice",36,2.5],["California roll","8 pieces",38,2],["Potato chips","28 g",15,1],["Pretzels","28 g",23,1],
+    ["Popcorn","750 mL",18,3.5],["Granola bar","1 bar",17,1.5],["Peanut butter","30 mL",7,2]],
+  "Sweets": [["Maple syrup","15 mL",13,0],["Honey","15 mL",17,0],["Jam","15 mL",14,0],["Sugar","5 mL",4,0],
+    ["Chocolate chip cookie","1 medium",10,0.5],["Doughnut","1",22,0.7],["Blueberry muffin","1 large",54,1.5],
+    ["Chocolate bar","43 g",26,1.5],["Glucose tablet","1 tablet",4,0]]
+};
+const FOODS = [];
+// Glycemic index category from Diabetes Canada's Glycemic Index Food Guide (07/25). Foods not listed are not rated.
+const GI = {
+  "Apple":"L","Orange":"L","Pear":"L","Strawberries":"L","Blueberries":"L","Mango":"L",
+  "Banana":"M","Grapes":"M","Watermelon":"M","Raisins":"M",
+  "White bread":"H","Whole wheat bread":"H","Bagel":"H","English muffin":"H","Naan":"H","Cheerios":"H","Corn flakes":"H","Soda crackers":"H",
+  "Flour tortilla":"L","Red River Cereal, cooked":"L","Granola":"M","Oatmeal, cooked":"M",
+  "White rice, cooked":"M","Brown rice, cooked":"L","Wild rice, cooked":"L","Pasta, cooked":"L","Quinoa, cooked":"L",
+  "Potato, baked":"H","Sweet potato":"L","French fries":"M","Corn on the cob":"M","Green peas":"L","Carrots, cooked":"L",
+  "Black beans":"L","Chickpeas":"L","Lentils":"L","Hummus":"L",
+  "Milk":"L","Chocolate milk":"L","Soy beverage, unsweetened":"L","Plain yogurt":"L","Greek yogurt, plain":"L",
+  "Pretzels":"H","Popcorn":"L"
+};
 const GI_NAME = { L: "Low GI", M: "Medium GI", H: "High GI" };
+const giBadge = name => GI[name] ? `<span class="gi ${GI[name]}">${GI_NAME[GI[name]]}</span>` : "";
 
 const $ = id => document.getElementById(id);
-let cat = "All";
-let meal = []; // {name, serving, carbs, fibre, gi, qty}
+let meal = [];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt = n => (Math.round(n * 10) / 10).toString();
+const store = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+const load = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const net = m => Math.max(0, m.carbs - m.fibre) * m.qty;
 
-function store(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
-function load(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
-function esc(s) { return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
-function fmtG(n) { return (Math.round(n * 10) / 10).toString(); }
-function giBadge(g) { return g ? `<span class="gi ${g}">${GI_NAME[g]}</span>` : ""; }
-
-function renderChips() {
-  $("chips").innerHTML = CATS.map(c => `<button class="chip ${c === cat ? "on" : ""}" data-cat="${esc(c)}">${esc(c)}</button>`).join("");
+function buildDropdown() {
+  let html = '<option value="">Choose a food or drink…</option>';
+  for (const [group, items] of Object.entries(GROUPS)) {
+    html += `<optgroup label="${esc(group)}">`;
+    for (const f of items) {
+      FOODS.push(f);
+      const gi = GI[f[0]] ? ` · ${GI_NAME[GI[f[0]]]}` : "";
+      html += `<option value="${FOODS.length - 1}">${esc(f[0])} (${esc(f[1])}) · ${fmt(f[2] - f[3])} g carbs${gi}</option>`;
+    }
+    html += "</optgroup>";
+  }
+  $("food").innerHTML = html;
 }
 
-function renderResults() {
-  const q = $("q").value.trim().toLowerCase();
-  const list = FOODS.filter(f => (cat === "All" || f[4] === cat) && (!q || f[0].toLowerCase().includes(q)));
-  $("results").innerHTML = list.length ? list.map(f => {
-    const i = FOODS.indexOf(f);
-    return `<div class="food">
-      <div class="name">${esc(f[0])}${giBadge(f[5])}<div class="serv">${esc(f[1])}</div></div>
-      <div class="carbs">${fmtG(f[2])} g carbs<div class="serv">${fmtG(f[3])} g fibre</div></div>
-      <button class="add" data-i="${i}" aria-label="Add ${esc(f[0])}">+</button>
-    </div>`;
-  }).join("") : `<div class="empty">No match. Add it from the Nutrition Facts table below, or look it up in the Canadian Nutrient File.</div>`;
+function add(name, serving, carbs, fibre) {
+  const same = meal.find(m => m.name === name && m.serving === serving && m.carbs === carbs);
+  if (same) same.qty += 1; else meal.push({ name, serving, carbs, fibre, qty: 1 });
+  render();
 }
 
-function addItem(name, serving, carbs, fibre, gi) {
-  const existing = meal.find(m => m.name === name && m.serving === serving && m.carbs === carbs && m.fibre === fibre);
-  if (existing) existing.qty += 1;
-  else meal.push({ name, serving, carbs, fibre, gi, qty: 1 });
-  renderMeal();
-}
-
-function useFibre() { return $("fibre").checked; }
-function itemCarbs(m) { return Math.max(0, useFibre() ? m.carbs - m.fibre : m.carbs) * m.qty; }
-
-function renderMeal() {
-  $("meal").innerHTML = meal.length ? meal.map((m, i) => `
-    <div class="meal-item">
-      <div class="name">${esc(m.name)}${giBadge(m.gi)}<div class="serv">${esc(m.serving)} · ${fmtG(m.carbs)} g carbs, ${fmtG(m.fibre)} g fibre each</div></div>
-      <div class="qty">
-        <button data-dec="${i}" aria-label="Less">−</button>
-        <span>${m.qty}</span>
-        <button data-inc="${i}" aria-label="More">+</button>
-      </div>
-      <div class="g">${fmtG(itemCarbs(m))} g</div>
-      <button class="remove" data-rm="${i}" aria-label="Remove ${esc(m.name)}">×</button>
-    </div>`).join("") : `<div class="empty">Nothing added yet. Tap + next to a food to add it.</div>`;
+function render() {
+  $("meal").innerHTML = meal.map((m, i) => `
+    <div class="item">
+      <div class="n">${esc(m.name)}${giBadge(m.name)}<span class="s">${esc(m.serving)}</span></div>
+      <div class="qty"><button data-d="${i}" aria-label="Less">−</button><span>${m.qty}</span><button data-u="${i}" aria-label="More">+</button></div>
+      <div class="g">${fmt(net(m))} g</div>
+      <button class="x" data-r="${i}" aria-label="Remove">×</button>
+    </div>`).join("");
   calc();
 }
 
-function decimalsFor(step) { return step >= 1 ? 0 : step >= 0.1 ? 1 : 2; }
-
 function calc() {
-  const ratio = parseFloat($("ratio").value);
-  const step = parseFloat($("round").value);
-  const d = decimalsFor(step);
-  const totalCarbs = meal.reduce((s, m) => s + m.carbs * m.qty, 0);
-  const totalFibre = meal.reduce((s, m) => s + m.fibre * m.qty, 0);
-  const carbs = meal.reduce((s, m) => s + itemCarbs(m), 0);
-  $("tCarbs").textContent = fmtG(totalCarbs) + " g";
-  $("tFibre").textContent = fmtG(totalFibre) + " g";
-  $("tUsedLabel").textContent = useFibre() ? "Carbs counted (minus fibre)" : "Carbs counted";
-  $("tUsed").textContent = fmtG(carbs) + " g";
-
   const ack = $("ack").checked;
-  $("ratioFields").classList.toggle("disabled", !ack);
-  const bg = parseFloat($("bg").value);
-  const target = parseFloat($("target").value);
-  const cf = parseFloat($("cf").value);
+  $("settings").classList.toggle("off", !ack);
+  const ratio = parseFloat($("ratio").value), step = parseFloat($("round").value);
+  const dp = step >= 1 ? 0 : 1;
+  const carbs = meal.reduce((s, m) => s + net(m), 0);
+  const bg = parseFloat($("bg").value), target = parseFloat($("target").value), cf = parseFloat($("cf").value);
+  const warn = [], danger = [];
+  let dose = "–", math = "";
 
-  const warnings = [], dangers = [];
-  const show = (total, math) => { $("dose").textContent = total; $("math").textContent = math; };
-
-  if (!ack) {
-    $("tCarbDose").textContent = "–"; $("tCorr").textContent = "–";
-    show("–", "Confirm your medical team approved your settings (top of this panel)");
-  } else if (!(ratio > 0)) {
-    $("tCarbDose").textContent = "–"; $("tCorr").textContent = "–";
-    show("–", "Enter your ratio");
+  if (!ack) math = "Tick the box in step 1 to see your dose.";
+  else if (!(ratio > 0)) math = "Enter your ratio in step 1.";
+  else if (bg > 0 && bg < 4) {
+    danger.push("Your blood sugar is low. Treat it first: 15 g of fast-acting carbs (like glucose tablets or 150 mL of juice), wait 15 minutes, recheck, and repeat until you're above 4 mmol/L. Don't take insulin for this meal until you've followed your care team's plan.");
+    math = "Treat your low first.";
   } else {
-    const carbExact = carbs / ratio;
-    $("tCarbDose").textContent = `${carbExact.toFixed(2)} units`;
-    if (ratio < 3 || ratio > 50) warnings.push(`A ratio of 1:${ratio} is unusual. Double-check it matches your care plan.`);
-
-    let corr = 0, corrUsed = false, blocked = false;
-    if (!(bg > 0)) {
-      $("tCorr").textContent = "not used";
-    } else if (!(target > 0) || !(cf > 0)) {
-      $("tCorr").textContent = "–";
-      warnings.push("Enter your target and correction factor from your care plan.");
-    } else if (bg < 4) {
-      blocked = true;
-      $("tCorr").textContent = "–";
-      dangers.push("Your blood sugar is low (below 4 mmol/L). Treat the low first, as Diabetes Canada recommends: take 15 g of fast-acting carbohydrate (such as glucose tablets or 150 mL of juice or regular pop), wait 15 minutes and recheck. Repeat until you're above 4 mmol/L. Do not take insulin for this meal until you've followed your care team's plan.");
-    } else {
-      corrUsed = true;
-      corr = (bg - target) / cf;
-      if (corr < 0) {
-        corr = 0;
-        $("tCorr").textContent = "0 units";
-        warnings.push("You're below your target, so no correction was added. Ask your care team whether you should reduce your meal dose in this situation.");
-      } else {
-        $("tCorr").textContent = `${corr.toFixed(2)} units`;
-      }
-      if (bg >= 14) warnings.push("Blood sugar is 14 mmol/L or higher. Check for ketones and follow your sick-day plan. Get medical help if ketones are moderate or high, or you are vomiting.");
-      if (target < 4 || target > 10) warnings.push(`A target of ${target} mmol/L is unusual. Double-check it with your care plan.`);
-      if (cf < 0.5 || cf > 10) warnings.push(`A correction factor of ${cf} is unusual. Double-check it with your care plan.`);
+    const carbDose = carbs / ratio;
+    let corr = 0;
+    if (bg > 0 && target > 0 && cf > 0) {
+      corr = Math.max(0, (bg - target) / cf);
+      if (bg < target) warn.push("You're below target, so no correction was added. Ask your care team if you should lower your meal dose.");
+      if (bg >= 14) warn.push("Blood sugar is 14 mmol/L or higher. Check for ketones and follow your sick-day plan.");
     }
-
-    if (blocked) {
-      show("–", "Treat your low first");
-    } else {
-      const exact = carbExact + corr;
-      const rounded = Math.round(exact / step) * step;
-      let math;
-      if (corrUsed && corr > 0) {
-        math = `Carbs ${fmtG(carbs)} ÷ ${ratio} = ${carbExact.toFixed(2)}, plus correction (${bg} − ${target}) ÷ ${cf} = ${corr.toFixed(2)}. Total ${exact.toFixed(2)}, rounded to ${rounded.toFixed(d)} units`;
-      } else if (carbs) {
-        math = `${fmtG(carbs)} g ÷ ${ratio} = ${exact.toFixed(2)} units, rounded to ${rounded.toFixed(d)}`;
-      } else {
-        math = "units";
-      }
-      show(rounded.toFixed(d), math);
-      if (rounded > 20) warnings.push("This is a large dose. Double-check your carb counts, portions and blood sugar reading before taking it.");
-    }
+    const total = carbDose + corr;
+    const rounded = Math.round(total / step) * step;
+    dose = rounded.toFixed(dp);
+    math = carbs || corr
+      ? `${fmt(carbs)} g carbs ÷ ${ratio} = ${carbDose.toFixed(2)}` + (corr ? ` + correction (${bg} − ${target}) ÷ ${cf} = ${corr.toFixed(2)}` : "")
+      : "Add food in step 2.";
+    if (ratio < 3 || ratio > 50) warn.push("That ratio is unusual. Double-check it with your care plan.");
+    if (rounded > 20) warn.push("This is a large dose. Double-check your carbs and portions.");
   }
-  $("warnings").innerHTML =
-    dangers.map(w => `<div class="danger">${esc(w)}</div>`).join("") +
-    warnings.map(w => `<div class="warning">${esc(w)}</div>`).join("");
+  $("dose").textContent = dose;
+  $("math").textContent = math;
+  $("alerts").innerHTML = danger.map(t => `<div class="alert danger">${esc(t)}</div>`).join("") + warn.map(t => `<div class="alert warn">${esc(t)}</div>`).join("");
 }
 
-$("chips").addEventListener("click", e => {
-  const b = e.target.closest("[data-cat]"); if (!b) return;
-  cat = b.dataset.cat; renderChips(); renderResults();
+$("addFood").addEventListener("click", () => {
+  const v = $("food").value;
+  if (v === "") { $("food").focus(); return; }
+  const f = FOODS[+v]; add(f[0], f[1], f[2], f[3]);
+  $("food").value = "";
 });
-$("q").addEventListener("input", renderResults);
-$("results").addEventListener("click", e => {
-  const b = e.target.closest("[data-i]"); if (!b) return;
-  const f = FOODS[+b.dataset.i]; addItem(f[0], f[1], f[2], f[3], f[5]);
-});
-$("customForm").addEventListener("submit", e => {
+$("manual").addEventListener("submit", e => {
   e.preventDefault();
-  const name = $("cName").value.trim() || "Custom item";
-  const carbs = parseFloat($("cCarbs").value);
-  const fibre = parseFloat($("cFibre").value) || 0;
-  if (!(carbs >= 0)) { $("cCarbs").focus(); return; }
-  addItem(name, "1 serving (label)", carbs, Math.min(fibre, carbs), "");
-  $("cName").value = ""; $("cCarbs").value = ""; $("cFibre").value = ""; $("cName").focus();
+  const c = parseFloat($("mCarbs").value), f = parseFloat($("mFibre").value) || 0;
+  if (!(c >= 0)) { $("mCarbs").focus(); return; }
+  add("From label", "1 serving", c, Math.min(f, c));
+  $("mCarbs").value = ""; $("mFibre").value = "";
 });
 $("meal").addEventListener("click", e => {
-  const t = e.target;
-  if (t.dataset.inc !== undefined) meal[+t.dataset.inc].qty += 0.5;
-  else if (t.dataset.dec !== undefined) {
-    const m = meal[+t.dataset.dec]; m.qty -= 0.5;
-    if (m.qty <= 0) meal.splice(+t.dataset.dec, 1);
-  } else if (t.dataset.rm !== undefined) meal.splice(+t.dataset.rm, 1);
+  const t = e.target.dataset;
+  if (t.u) meal[+t.u].qty += 0.5;
+  else if (t.d) { meal[+t.d].qty -= 0.5; if (meal[+t.d].qty <= 0) meal.splice(+t.d, 1); }
+  else if (t.r) meal.splice(+t.r, 1);
   else return;
-  renderMeal();
+  render();
 });
-$("ratio").addEventListener("input", () => { store("icr", $("ratio").value); calc(); });
-$("round").addEventListener("change", () => { store("round", $("round").value); calc(); });
-$("fibre").addEventListener("change", () => { store("fibre", $("fibre").checked ? "1" : "0"); renderMeal(); });
-$("ack").addEventListener("change", () => { store("ack", $("ack").checked ? "1" : ""); calc(); });
+["ratio","round","target","cf"].forEach(id => $(id).addEventListener("input", () => { store(id, $(id).value); calc(); }));
 $("bg").addEventListener("input", calc);
-$("target").addEventListener("input", () => { store("target", $("target").value); calc(); });
-$("cf").addEventListener("input", () => { store("cf", $("cf").value); calc(); });
-$("clear").addEventListener("click", () => { meal = []; renderMeal(); });
-$("copy").addEventListener("click", async () => {
-  const lines = meal.map(m => `${m.name} x${m.qty} (${m.serving}): ${fmtG(itemCarbs(m))} g`);
-  const corrLine = $("ack").checked && $("bg").value
-    ? `\nBlood sugar ${$("bg").value} mmol/L, target ${$("target").value}, correction factor ${$("cf").value}\nCorrection dose: ${$("tCorr").textContent}`
-    : "";
-  const text = `${lines.join("\n")}\n${$("tUsedLabel").textContent}: ${$("tUsed").textContent}\nRatio 1:${$("ratio").value}\nCarb dose: ${$("tCarbDose").textContent}${corrLine}\nTotal dose: ${$("dose").textContent} units`;
-  const btn = $("copy");
-  try { await navigator.clipboard.writeText(text); btn.textContent = "Copied"; }
-  catch (e) { btn.textContent = "Copy not available"; }
-  setTimeout(() => btn.textContent = "Copy summary", 1500);
-});
+$("ack").addEventListener("change", () => { store("ack", $("ack").checked ? "1" : ""); calc(); });
 
-const savedRatio = load("icr"); if (savedRatio) $("ratio").value = savedRatio;
-const savedRound = load("round"); if (savedRound) $("round").value = savedRound;
-if (load("fibre") === "0") $("fibre").checked = false;
+["ratio","round","target","cf"].forEach(id => { const v = load(id); if (v) $(id).value = v; });
 if (load("ack") === "1") $("ack").checked = true;
-const savedTarget = load("target"); if (savedTarget) $("target").value = savedTarget;
-const savedCf = load("cf"); if (savedCf) $("cf").value = savedCf;
-renderChips(); renderResults(); renderMeal();
+buildDropdown();
+render();
 </script>
 </body>
 </html>
