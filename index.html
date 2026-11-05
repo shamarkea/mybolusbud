@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MyBolusBud</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #c8102e;
+    --red-dark: #9e0c24;
+    --red-soft: #fcebed;
+    --bg: #faf8f6;
+    --card: #ffffff;
+    --ink: #1f2326;
+    --muted: #646a70;
+    --line: #e8e2dc;
+    --warn: #8a4b00;
+    --warn-soft: #fff3e2;
+    --gi-l: #2e7d32; --gi-m: #b06a00; --gi-h: #c62828;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: "DM Sans", system-ui, sans-serif; font-size: 15px; line-height: 1.45; }
+  a { color: var(--red-dark); }
+
+  .band { background: var(--red); color: #fff; position: relative; overflow: hidden; }
+  .band::before, .band::after { content: ""; position: absolute; top: 0; bottom: 0; width: 18px; background: #fff; opacity: .14; }
+  .band::before { left: 0; } .band::after { right: 0; }
+  .band-inner { max-width: 1080px; margin: 0 auto; padding: 30px 20px 26px; display: flex; gap: 18px; align-items: center; }
+  .leaf { width: 58px; height: 58px; flex-shrink: 0; }
+  h1 { font-family: "DM Serif Display", Georgia, serif; font-weight: 400; font-size: 34px; margin: 0 0 2px; letter-spacing: -0.01em; }
+  .band p { margin: 0; opacity: .92; }
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .tags span { background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.35); border-radius: 999px; padding: 2px 10px; font-size: 12.5px; }
+
+  main { max-width: 1080px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 370px; gap: 20px; align-items: start; }
+  @media (max-width: 840px) { main { grid-template-columns: 1fr; } .summary { position: static !important; } .band-inner { align-items: flex-start; } }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; }
+  .card + .card { margin-top: 20px; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0 0 14px; font-weight: 700; }
+  input, select, button { font: inherit; color: inherit; }
+  input[type=text], input[type=number], select { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+  input:focus, select:focus, button:focus-visible { outline: 2px solid var(--red); outline-offset: 1px; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
+  .chip { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 5px 12px; cursor: pointer; font-size: 13px; }
+  .chip.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted); margin-bottom: 8px; }
+  .results { max-height: 360px; overflow-y: auto; border-top: 1px solid var(--line); }
+  .food { display: flex; align-items: center; gap: 12px; padding: 10px 4px; border-bottom: 1px solid var(--line); }
+  .food .name { flex: 1; }
+  .serv { color: var(--muted); font-size: 13px; }
+  .food .carbs { font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; text-align: right; font-size: 13.5px; }
+  .gi { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 700; padding: 1px 7px; border-radius: 999px; margin-left: 6px; vertical-align: 1px; }
+  .gi::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .gi.L { color: var(--gi-l); background: #e8f3e9; } .gi.M { color: var(--gi-m); background: #fdf1df; } .gi.H { color: var(--gi-h); background: #fbe7e7; }
+  .add { border: none; background: var(--red-soft); color: var(--red-dark); width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: 700; flex-shrink: 0; }
+  .add:hover { background: var(--red); color: #fff; }
+  .empty { color: var(--muted); padding: 16px 4px; }
+  .custom { display: grid; grid-template-columns: 1fr 112px 112px auto; gap: 8px; }
+  @media (max-width: 520px) { .custom { grid-template-columns: 1fr 1fr; } .custom input:first-child { grid-column: 1 / -1; } }
+  .primary { border: none; background: var(--red); color: #fff; border-radius: 10px; padding: 10px 16px; cursor: pointer; font-weight: 500; }
+  .primary:hover { background: var(--red-dark); }
+  .hint { color: var(--muted); font-size: 13px; margin: 8px 0 0; }
+
+  .meal-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .meal-item:last-child { border-bottom: none; }
+  .meal-item .name { flex: 1; min-width: 0; }
+  .qty { display: flex; align-items: center; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .qty button { border: none; background: #fff; width: 28px; height: 30px; cursor: pointer; font-size: 16px; }
+  .qty button:hover { background: var(--red-soft); }
+  .qty span { min-width: 34px; text-align: center; font-variant-numeric: tabular-nums; font-size: 14px; }
+  .meal-item .g { width: 58px; text-align: right; font-variant-numeric: tabular-nums; font-weight: 500; }
+  .remove { border: none; background: none; color: var(--muted); cursor: pointer; font-size: 18px; padding: 0 4px; }
+  .remove:hover { color: var(--red); }
+
+  .summary { position: sticky; top: 20px; }
+  .consent { background: var(--warn-soft); color: var(--warn); border-radius: 12px; padding: 14px; margin-bottom: 20px; font-size: 13.5px; }
+  .consent p { margin: 6px 0 12px; }
+  .check { display: flex; gap: 8px; align-items: flex-start; font-size: 13.5px; cursor: pointer; }
+  .check input { margin-top: 3px; accent-color: var(--red); }
+  .consent .check { color: var(--ink); font-weight: 500; }
+  .gated.disabled { opacity: 0.4; pointer-events: none; }
+  .ratio { display: flex; align-items: center; gap: 8px; }
+  .ratio input { width: 80px; text-align: center; font-size: 17px; font-weight: 500; }
+  label.field { display: block; margin-top: 14px; font-size: 13px; color: var(--muted); }
+  label.field select, label.field input { margin-top: 6px; color: var(--ink); }
+  .section { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .totals { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .row { display: flex; justify-content: space-between; margin-bottom: 6px; gap: 10px; }
+  .row span:last-child { font-variant-numeric: tabular-nums; font-weight: 500; text-align: right; }
+  .row.strong span { font-weight: 700; }
+  .dose { margin-top: 14px; background: var(--red-soft); border-radius: 12px; padding: 18px; text-align: center; }
+  .dose .label { font-size: 13px; color: var(--red-dark); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+  .dose .num { font-family: "DM Serif Display", Georgia, serif; font-size: 56px; line-height: 1.05; color: var(--red-dark); font-variant-numeric: tabular-nums; }
+  .dose .math { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .warning { background: var(--warn-soft); color: var(--warn); border-radius: 10px; padding: 10px 12px; font-size: 13px; margin-top: 12px; }
+  .danger { background: #fde8e8; color: #8f1111; border: 1px solid #f3b9b9; border-radius: 10px; padding: 10px 12px; font-size: 13px; margin-top: 12px; font-weight: 500; }
+  .iob { margin-top: 18px; background: #f3f1ee; border-radius: 10px; padding: 12px; font-size: 13px; }
+  .iob strong { display: block; margin-bottom: 4px; }
+  .actions { display: flex; gap: 8px; margin-top: 14px; }
+  .actions button { flex: 1; }
+  .ghost { border: 1px solid var(--line); background: #fff; border-radius: 10px; padding: 10px 16px; cursor: pointer; }
+  .disclaimer { color: var(--muted); font-size: 12.5px; margin-top: 14px; }
+
+  .resources { max-width: 1080px; margin: 0 auto; padding: 0 20px 20px; }
+  .resources h2.big { font-family: "DM Serif Display", Georgia, serif; font-size: 26px; text-transform: none; letter-spacing: 0; color: var(--ink); font-weight: 400; margin: 10px 0 4px; }
+  .resources > p { color: var(--muted); margin: 0 0 16px; }
+  .res-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .res { background: #fff; border: 1px solid var(--line); border-top: 4px solid var(--red); border-radius: var(--radius); padding: 16px 18px; display: flex; flex-direction: column; }
+  .res .org { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--red-dark); }
+  .res h3 { margin: 4px 0 6px; font-size: 17px; }
+  .res p { margin: 0 0 10px; font-size: 13.5px; color: #3d4247; flex: 1; }
+  .status { font-size: 12.5px; border-radius: 8px; padding: 6px 9px; margin-bottom: 10px; }
+  .status.ok { background: #e8f3e9; color: #1f5e23; }
+  .status.old { background: var(--warn-soft); color: var(--warn); }
+  .res a.go { font-weight: 500; font-size: 14px; }
+  .helpline { margin-top: 16px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 18px; font-size: 14px; }
+  footer { max-width: 1080px; margin: 0 auto; padding: 10px 20px 40px; color: var(--muted); font-size: 12.5px; }
+</style>
+</head>
+<body>
+<div class="band">
+  <div class="band-inner">
+    <svg class="leaf" viewBox="0 0 100 100" aria-hidden="true"><polygon fill="#fff" points="50,5 57,20 66,15 63,38 76,26 80,33 93,30 88,45 95,50 75,63 78,72 55,68 53,95 47,95 45,68 22,72 25,63 5,50 12,45 7,30 20,33 24,26 37,38 34,15 43,20"/></svg>
+    <div>
+      <h1>MyBolusBud</h1>
+      <p>Add what you're eating, enter the settings from your care team, and see the mealtime dose.</p>
+      <div class="tags"><span>mmol/L</span><span>Millilitres</span><span>Fibre subtracted</span><span>Glycemic index colours</span></div>
+    </div>
+  </div>
+</div>
+
+<main>
+  <section>
+    <div class="card">
+      <h2>Find food or drink</h2>
+      <input type="text" id="q" placeholder="Search, e.g. banana, wild rice, maple syrup…" autocomplete="off" aria-label="Search foods">
+      <div class="chips" id="chips"></div>
+      <div class="legend">
+        <span>Glycemic index (Diabetes Canada):</span>
+        <span class="gi L">Low</span><span class="gi M">Medium</span><span class="gi H">High</span>
+        <span>No badge = not rated</span>
+      </div>
+      <div class="results" id="results" aria-live="polite"></div>
+    </div>
+
+    <div class="card">
+      <h2>Add from a Nutrition Facts table</h2>
+      <form class="custom" id="customForm">
+        <input type="text" id="cName" placeholder="Food name" aria-label="Custom food name">
+        <input type="number" id="cCarbs" placeholder="Carbs (g)" min="0" step="0.1" aria-label="Carbohydrate in grams">
+        <input type="number" id="cFibre" placeholder="Fibre (g)" min="0" step="0.1" aria-label="Fibre in grams">
+        <button class="primary" type="submit">Add</button>
+      </form>
+      <p class="hint">Use the "Carbohydrate" and "Fibre" lines from the label. Check the serving size at the top, and adjust if you're eating more or less.</p>
+    </div>
+
+    <div class="card">
+      <h2>Your meal</h2>
+      <div id="meal"></div>
+    </div>
+  </section>
+
+  <aside class="summary card">
+    <div class="consent">
+      <strong>Medical team approval required</strong>
+      <p>Every setting in this panel (your insulin-to-carb ratio, target blood sugar, correction factor and how long your insulin stays active) must be set or approved by your doctor or diabetes care team. Do not guess or copy someone else's numbers.</p>
+      <label class="check"><input type="checkbox" id="ack"> My medical team has set or approved my ratio, target and correction factor</label>
+    </div>
+
+    <div id="ratioFields" class="gated disabled">
+      <h2>Your ratio</h2>
+      <p class="hint" style="margin:-6px 0 10px">Set by your health team.</p>
+      <div class="ratio">
+        <span>1 unit for every</span>
+        <input type="number" id="ratio" value="10" min="1" step="0.5" aria-label="Grams of carbs per unit of insulin">
+        <span>g carbs</span>
+      </div>
+      <label class="field">Round dose to
+        <select id="round">
+          <option value="1">Nearest 1 unit (most pens)</option>
+          <option value="0.5" selected>Nearest 0.5 unit (half-unit pens)</option>
+          <option value="0.1">Nearest 0.1 unit (pumps)</option>
+          <option value="0.05">Nearest 0.05 unit (pumps)</option>
+        </select>
+      </label>
+      <label class="check" style="margin-top:14px"><input type="checkbox" id="fibre" checked> Subtract fibre (Diabetes Canada's carb counting method). Ask your care team which method they want you to use.</label>
+
+      <div class="section">
+        <h2>Correction (optional)</h2>
+        <p class="hint" style="margin:-6px 0 4px">Target and correction factor are set by your health team. Leave blood sugar blank to skip.</p>
+        <label class="field">Current blood sugar (mmol/L)
+          <input type="number" id="bg" min="0" step="0.1" placeholder="e.g. 10">
+        </label>
+        <label class="field">Target blood sugar (mmol/L)
+          <input type="number" id="target" min="0" step="0.1" value="6">
+        </label>
+        <label class="field">Correction factor: 1 unit lowers blood sugar by (mmol/L)
+          <input type="number" id="cf" min="0" step="0.1" value="4">
+        </label>
+      </div>
+    </div>
+
+    <div class="iob">
+      <strong>Insulin on board</strong>
+      Insulin from an earlier dose usually keeps working for 2 to 6 hours. Your health team will tell you how long yours lasts. This calculator does not subtract it, so taking another dose too soon can stack insulin and cause a low.
+    </div>
+
+    <div class="totals">
+      <div class="row"><span>Total carbohydrate</span><span id="tCarbs">0 g</span></div>
+      <div class="row"><span>Fibre</span><span id="tFibre">0 g</span></div>
+      <div class="row strong"><span id="tUsedLabel">Carbs counted</span><span id="tUsed">0 g</span></div>
+      <div class="row"><span>Carb dose</span><span id="tCarbDose">–</span></div>
+      <div class="row"><span>Correction dose</span><span id="tCorr">–</span></div>
+      <div class="dose">
+        <div class="label">Total dose</div>
+        <div class="num" id="dose">–</div>
+        <div class="math" id="math">units</div>
+      </div>
+      <div id="warnings"></div>
+      <div class="actions">
+        <button class="primary" id="copy">Copy summary</button>
+        <button class="ghost" id="clear">Clear meal</button>
+      </div>
+    </div>
+    <p class="disclaimer">This tool is not medical advice and does not replace your healthcare provider. Your insulin-to-carb ratio, target and correction factor must be set by your doctor or diabetes care team. It does not account for insulin still active from earlier doses, exercise, illness or alcohol. Carb and fibre values are typical estimates; portions vary.</p>
+  </aside>
+</main>
+
+<section class="resources" aria-labelledby="resTitle">
+  <h2 class="big" id="resTitle">Canadian resources</h2>
+  <p>Checked November 2026 against the Diabetes Canada and Government of Canada websites.</p>
+  <div class="res-grid">
+    <div class="res">
+      <div class="org">Diabetes Canada</div>
+      <h3>Basic Carbohydrate Counting</h3>
+      <p>Five steps to carb counting: choosing foods, finding carbs, setting goals with a dietitian, reading the Nutrition Facts table (including subtracting fibre) and tracking how foods affect your blood sugar.</p>
+      <div class="status ok">Current: 07/25 edition, reflects the 2023 Clinical Practice Guidelines.</div>
+      <a class="go" href="https://diabetes.ca/managing-my-diabetes/tools---resources/basic-carbohydrate-counting">Open on diabetes.ca →</a>
+    </div>
+    <div class="res">
+      <div class="org">Diabetes Canada</div>
+      <h3>Glycemic Index Food Guide</h3>
+      <p>Low (55 or less), medium (56 to 69) and high (70 or more) GI food lists, swap ideas and the balanced plate method. The GI badges in this calculator come from this guide.</p>
+      <div class="status ok">Current: 07/25 edition, reflects the 2023 Clinical Practice Guidelines.</div>
+      <a class="go" href="https://www.diabetes.ca/resources/tools-resources/the-glycemic-index-(gi)">Open on diabetes.ca →</a>
+    </div>
+    <div class="res">
+      <div class="org">Diabetes Canada</div>
+      <h3>Lows and Highs: Blood Sugar Levels</h3>
+      <p>How to treat a low: 15 g of fast-acting carbohydrate (such as glucose tablets or 150 mL of juice or regular pop), wait 15 minutes, recheck, and repeat until you're above 4 mmol/L.</p>
+      <div class="status ok">Diabetes Canada handout, available on diabetes.ca.</div>
+      <a class="go" href="https://www.diabetes.ca/DiabetesCanadaWebsite/media/Managing-My-Diabetes/Tools%20and%20Resources/lows-and-highs-blood-sugar-levels.pdf?ext=.pdf">Open PDF →</a>
+    </div>
+    <div class="res">
+      <div class="org">Health Canada · Indigenous Services Canada</div>
+      <h3>Diabetes Factsheets (Aboriginal Diabetes Initiative)</h3>
+      <p>Six factsheets on what diabetes is, risk factors, signs of type 2, being active, healthy eating and smoking, written for First Nations, Inuit and Métis communities.</p>
+      <div class="status old">Dated: published 2011. The program is now run by Indigenous Services Canada, and some advice has been replaced by Canada's Food Guide (2019) and the Canadian 24-Hour Movement Guidelines.</div>
+      <a class="go" href="https://www.sac-isc.gc.ca/eng/1569960595332/1569960634063">Current Indigenous Services Canada page →</a>
+    </div>
+    <div class="res">
+      <div class="org">Health Canada</div>
+      <h3>Canadian Nutrient File</h3>
+      <p>Health Canada's food composition database for foods sold in Canada. Use it to look up carbohydrate and fibre for foods without a label.</p>
+      <div class="status ok">Current: online search still available while the 2026 dataset is rolled out.</div>
+      <a class="go" href="https://food-nutrition.canada.ca/cnf-fce">Search foods →</a>
+    </div>
+    <div class="res">
+      <div class="org">Health Canada</div>
+      <h3>Canada's Food Guide</h3>
+      <p>Healthy eating advice for all Canadians, including the plate model: half vegetables and fruits, a quarter whole grains, a quarter protein foods.</p>
+      <div class="status ok">Current edition: 2019.</div>
+      <a class="go" href="https://food-guide.canada.ca/en/">Open the Food Guide →</a>
+    </div>
+  </div>
+  <div class="helpline"><strong>Diabetes Canada:</strong> 1-800-BANTING (1-800-226-8464) · info@diabetes.ca · diabetes.ca</div>
+</section>
+
+<footer>Not affiliated with or endorsed by Diabetes Canada, Health Canada or Indigenous Services Canada. Carb and fibre values are typical estimates using Canadian metric servings (1 cup = 250 mL); check labels or the Canadian Nutrient File. Glycemic index categories are from Diabetes Canada's Glycemic Index Food Guide (07/25). Not medical advice.</footer>
+
+<script>
+// [name, serving, carbs g, fibre g, category, GI: L/M/H or ""]
+const FOODS = [
+  ["Apple", "1 medium", 25, 4.4, "Fruit", "L"],
+  ["Banana, ripe", "1 medium", 27, 3.1, "Fruit", "M"],
+  ["Orange", "1 medium", 15, 3.1, "Fruit", "L"],
+  ["Pear", "1 medium", 27, 5.5, "Fruit", "L"],
+  ["Grapes", "250 mL (1 cup)", 27, 1.4, "Fruit", "M"],
+  ["Strawberries", "250 mL (1 cup), sliced", 12, 3, "Fruit", "L"],
+  ["Blueberries", "250 mL (1 cup)", 21, 3.6, "Fruit", "L"],
+  ["Watermelon", "250 mL (1 cup), diced", 12, 0.6, "Fruit", "M"],
+  ["Mango", "250 mL (1 cup), sliced", 25, 2.6, "Fruit", "L"],
+  ["Raisins", "60 mL (1/4 cup)", 31, 1.5, "Fruit", "M"],
+
+  ["White bread", "1 slice", 13, 0.8, "Grains", "H"],
+  ["Whole wheat bread", "1 slice", 12, 2, "Grains", "H"],
+  ["Pumpernickel bread", "1 slice", 15, 2, "Grains", "L"],
+  ["Bagel, plain", "1 medium", 48, 2, "Grains", "H"],
+  ["English muffin, white", "1 whole", 26, 2, "Grains", "H"],
+  ["English muffin, whole wheat", "1 whole", 27, 4.4, "Grains", "L"],
+  ["White rice, long grain, cooked", "250 mL (1 cup)", 45, 0.6, "Grains", "M"],
+  ["Jasmine rice, cooked", "250 mL (1 cup)", 45, 0.6, "Grains", "H"],
+  ["Brown rice, cooked", "250 mL (1 cup)", 46, 3.5, "Grains", "L"],
+  ["Wild rice, cooked", "250 mL (1 cup)", 35, 3, "Grains", "L"],
+  ["Pasta, al dente", "250 mL (1 cup)", 43, 2.5, "Grains", "L"],
+  ["Quinoa, cooked", "250 mL (1 cup)", 39, 5, "Grains", "L"],
+  ["Barley, cooked", "250 mL (1 cup)", 44, 6, "Grains", "L"],
+  ["Oatmeal, large flake, cooked", "250 mL (1 cup)", 27, 4, "Grains", "M"],
+  ["Oatmeal, instant", "1 plain packet", 19, 2.5, "Grains", "H"],
+  ["Red River Cereal, cooked", "175 mL (3/4 cup)", 26, 5, "Grains", "L"],
+  ["Bannock", "1 piece (about 60 g)", 30, 1.5, "Grains", ""],
+  ["Flour tortilla", "1 (8 inch)", 25, 1.5, "Grains", "L"],
+  ["Corn tortilla", "1 (6 inch)", 11, 1.5, "Grains", "L"],
+  ["Naan", "1 piece", 45, 2, "Grains", "H"],
+  ["Pancake", "1 (6 inch)", 22, 1, "Grains", ""],
+  ["Croissant", "1 medium", 26, 1.5, "Grains", ""],
+  ["Hamburger bun", "1 bun", 22, 1, "Grains", ""],
+  ["Cheerios", "250 mL (1 cup)", 20, 3, "Grains", "H"],
+  ["Corn flakes", "250 mL (1 cup)", 24, 1, "Grains", "H"],
+  ["Granola", "125 mL (1/2 cup)", 32, 4, "Grains", "M"],
+  ["Soda crackers", "5 crackers", 11, 0.4, "Grains", "H"],
+
+  ["Potato, baked", "1 medium", 37, 4, "Starchy veg & beans", "H"],
+  ["Sweet potato, boiled", "1 medium", 24, 4, "Starchy veg & beans", "L"],
+  ["French fries", "1 medium serving", 45, 4, "Starchy veg & beans", "M"],
+  ["Corn on the cob", "1 medium ear", 19, 2, "Starchy veg & beans", "M"],
+  ["Green peas", "250 mL (1 cup)", 21, 7, "Starchy veg & beans", "L"],
+  ["Black beans, cooked", "250 mL (1 cup)", 41, 15, "Starchy veg & beans", "L"],
+  ["Chickpeas, cooked", "250 mL (1 cup)", 45, 12.5, "Starchy veg & beans", "L"],
+  ["Lentils, cooked", "250 mL (1 cup)", 40, 15.6, "Starchy veg & beans", "L"],
+  ["Hummus", "30 mL (2 tbsp)", 4, 1.8, "Starchy veg & beans", "L"],
+  ["Carrots, cooked", "250 mL (1 cup)", 13, 4.7, "Starchy veg & beans", "L"],
+  ["Broccoli, cooked", "250 mL (1 cup)", 11, 5, "Starchy veg & beans", ""],
+  ["Salad greens", "250 mL (1 cup)", 1, 0.5, "Starchy veg & beans", ""],
+
+  ["Milk, 1% or 2%", "250 mL (1 cup)", 12, 0, "Dairy & alternatives", "L"],
+  ["Chocolate milk, 1% or 2%", "250 mL (1 cup)", 26, 2, "Dairy & alternatives", "L"],
+  ["Soy beverage, unsweetened", "250 mL (1 cup)", 4, 1, "Dairy & alternatives", "L"],
+  ["Oat beverage, unsweetened", "250 mL (1 cup)", 16, 2, "Dairy & alternatives", "M"],
+  ["Plain yogurt", "175 mL (3/4 cup)", 13, 0, "Dairy & alternatives", "L"],
+  ["Greek yogurt, plain", "175 mL (3/4 cup)", 6, 0, "Dairy & alternatives", "L"],
+  ["Flavoured yogurt", "175 mL (3/4 cup)", 25, 0, "Dairy & alternatives", ""],
+  ["Ice cream", "125 mL (1/2 cup)", 16, 0.5, "Dairy & alternatives", ""],
+  ["Cheddar cheese", "50 g", 0, 0, "Dairy & alternatives", "L"],
+
+  ["Cola", "1 can (355 mL)", 39, 0, "Drinks", ""],
+  ["Orange juice", "250 mL (1 cup)", 26, 0.5, "Drinks", ""],
+  ["Apple juice", "250 mL (1 cup)", 28, 0, "Drinks", ""],
+  ["Sports drink", "1 bottle (591 mL)", 34, 0, "Drinks", ""],
+  ["Latte, 2% milk", "473 mL (16 oz)", 18, 0, "Drinks", ""],
+  ["Beer, regular", "1 can (355 mL)", 13, 0, "Drinks", ""],
+  ["Wine", "150 mL glass", 4, 0, "Drinks", ""],
+  ["Diet pop", "1 can (355 mL)", 0, 0, "Drinks", ""],
+  ["Black coffee or tea", "250 mL (1 cup)", 0, 0, "Drinks", ""],
+
+  ["Cheese pizza", "1 slice (14 inch pie)", 36, 2.5, "Meals & snacks", ""],
+  ["California roll", "8 pieces", 38, 2, "Meals & snacks", ""],
+  ["Potato chips", "28 g (about 15 chips)", 15, 1, "Meals & snacks", ""],
+  ["Pretzels", "28 g", 23, 1, "Meals & snacks", "H"],
+  ["Popcorn, air-popped", "750 mL (3 cups)", 18, 3.5, "Meals & snacks", "L"],
+  ["Granola bar", "1 bar", 17, 1.5, "Meals & snacks", ""],
+  ["Nuts or seeds", "60 mL (1/4 cup)", 7, 3.5, "Meals & snacks", "L"],
+  ["Peanut butter", "30 mL (2 tbsp)", 7, 2, "Meals & snacks", ""],
+  ["Egg", "1 large", 0.4, 0, "Meals & snacks", ""],
+  ["Chicken, meat or fish", "any portion", 0, 0, "Meals & snacks", ""],
+
+  ["Maple syrup", "15 mL (1 tbsp)", 13, 0, "Sweets", ""],
+  ["Honey", "15 mL (1 tbsp)", 17, 0, "Sweets", ""],
+  ["Jam", "15 mL (1 tbsp)", 14, 0, "Sweets", ""],
+  ["Sugar", "5 mL (1 tsp)", 4, 0, "Sweets", ""],
+  ["Chocolate chip cookie", "1 medium", 10, 0.5, "Sweets", ""],
+  ["Glazed doughnut", "1 doughnut", 22, 0.7, "Sweets", ""],
+  ["Blueberry muffin", "1 large", 54, 1.5, "Sweets", ""],
+  ["Milk chocolate bar", "1 bar (43 g)", 26, 1.5, "Sweets", ""],
+  ["Glucose tablet", "1 tablet (check package, usually 4 g)", 4, 0, "Sweets", ""],
+];
+const CATS = ["All", ...new Set(FOODS.map(f => f[4]))];
+const GI_NAME = { L: "Low GI", M: "Medium GI", H: "High GI" };
+
+const $ = id => document.getElementById(id);
+let cat = "All";
+let meal = []; // {name, serving, carbs, fibre, gi, qty}
+
+function store(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+function load(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function fmtG(n) { return (Math.round(n * 10) / 10).toString(); }
+function giBadge(g) { return g ? `<span class="gi ${g}">${GI_NAME[g]}</span>` : ""; }
+
+function renderChips() {
+  $("chips").innerHTML = CATS.map(c => `<button class="chip ${c === cat ? "on" : ""}" data-cat="${esc(c)}">${esc(c)}</button>`).join("");
+}
+
+function renderResults() {
+  const q = $("q").value.trim().toLowerCase();
+  const list = FOODS.filter(f => (cat === "All" || f[4] === cat) && (!q || f[0].toLowerCase().includes(q)));
+  $("results").innerHTML = list.length ? list.map(f => {
+    const i = FOODS.indexOf(f);
+    return `<div class="food">
+      <div class="name">${esc(f[0])}${giBadge(f[5])}<div class="serv">${esc(f[1])}</div></div>
+      <div class="carbs">${fmtG(f[2])} g carbs<div class="serv">${fmtG(f[3])} g fibre</div></div>
+      <button class="add" data-i="${i}" aria-label="Add ${esc(f[0])}">+</button>
+    </div>`;
+  }).join("") : `<div class="empty">No match. Add it from the Nutrition Facts table below, or look it up in the Canadian Nutrient File.</div>`;
+}
+
+function addItem(name, serving, carbs, fibre, gi) {
+  const existing = meal.find(m => m.name === name && m.serving === serving && m.carbs === carbs && m.fibre === fibre);
+  if (existing) existing.qty += 1;
+  else meal.push({ name, serving, carbs, fibre, gi, qty: 1 });
+  renderMeal();
+}
+
+function useFibre() { return $("fibre").checked; }
+function itemCarbs(m) { return Math.max(0, useFibre() ? m.carbs - m.fibre : m.carbs) * m.qty; }
+
+function renderMeal() {
+  $("meal").innerHTML = meal.length ? meal.map((m, i) => `
+    <div class="meal-item">
+      <div class="name">${esc(m.name)}${giBadge(m.gi)}<div class="serv">${esc(m.serving)} · ${fmtG(m.carbs)} g carbs, ${fmtG(m.fibre)} g fibre each</div></div>
+      <div class="qty">
+        <button data-dec="${i}" aria-label="Less">−</button>
+        <span>${m.qty}</span>
+        <button data-inc="${i}" aria-label="More">+</button>
+      </div>
+      <div class="g">${fmtG(itemCarbs(m))} g</div>
+      <button class="remove" data-rm="${i}" aria-label="Remove ${esc(m.name)}">×</button>
+    </div>`).join("") : `<div class="empty">Nothing added yet. Tap + next to a food to add it.</div>`;
+  calc();
+}
+
+function decimalsFor(step) { return step >= 1 ? 0 : step >= 0.1 ? 1 : 2; }
+
+function calc() {
+  const ratio = parseFloat($("ratio").value);
+  const step = parseFloat($("round").value);
+  const d = decimalsFor(step);
+  const totalCarbs = meal.reduce((s, m) => s + m.carbs * m.qty, 0);
+  const totalFibre = meal.reduce((s, m) => s + m.fibre * m.qty, 0);
+  const carbs = meal.reduce((s, m) => s + itemCarbs(m), 0);
+  $("tCarbs").textContent = fmtG(totalCarbs) + " g";
+  $("tFibre").textContent = fmtG(totalFibre) + " g";
+  $("tUsedLabel").textContent = useFibre() ? "Carbs counted (minus fibre)" : "Carbs counted";
+  $("tUsed").textContent = fmtG(carbs) + " g";
+
+  const ack = $("ack").checked;
+  $("ratioFields").classList.toggle("disabled", !ack);
+  const bg = parseFloat($("bg").value);
+  const target = parseFloat($("target").value);
+  const cf = parseFloat($("cf").value);
+
+  const warnings = [], dangers = [];
+  const show = (total, math) => { $("dose").textContent = total; $("math").textContent = math; };
+
+  if (!ack) {
+    $("tCarbDose").textContent = "–"; $("tCorr").textContent = "–";
+    show("–", "Confirm your medical team approved your settings (top of this panel)");
+  } else if (!(ratio > 0)) {
+    $("tCarbDose").textContent = "–"; $("tCorr").textContent = "–";
+    show("–", "Enter your ratio");
+  } else {
+    const carbExact = carbs / ratio;
+    $("tCarbDose").textContent = `${carbExact.toFixed(2)} units`;
+    if (ratio < 3 || ratio > 50) warnings.push(`A ratio of 1:${ratio} is unusual. Double-check it matches your care plan.`);
+
+    let corr = 0, corrUsed = false, blocked = false;
+    if (!(bg > 0)) {
+      $("tCorr").textContent = "not used";
+    } else if (!(target > 0) || !(cf > 0)) {
+      $("tCorr").textContent = "–";
+      warnings.push("Enter your target and correction factor from your care plan.");
+    } else if (bg < 4) {
+      blocked = true;
+      $("tCorr").textContent = "–";
+      dangers.push("Your blood sugar is low (below 4 mmol/L). Treat the low first, as Diabetes Canada recommends: take 15 g of fast-acting carbohydrate (such as glucose tablets or 150 mL of juice or regular pop), wait 15 minutes and recheck. Repeat until you're above 4 mmol/L. Do not take insulin for this meal until you've followed your care team's plan.");
+    } else {
+      corrUsed = true;
+      corr = (bg - target) / cf;
+      if (corr < 0) {
+        corr = 0;
+        $("tCorr").textContent = "0 units";
+        warnings.push("You're below your target, so no correction was added. Ask your care team whether you should reduce your meal dose in this situation.");
+      } else {
+        $("tCorr").textContent = `${corr.toFixed(2)} units`;
+      }
+      if (bg >= 14) warnings.push("Blood sugar is 14 mmol/L or higher. Check for ketones and follow your sick-day plan. Get medical help if ketones are moderate or high, or you are vomiting.");
+      if (target < 4 || target > 10) warnings.push(`A target of ${target} mmol/L is unusual. Double-check it with your care plan.`);
+      if (cf < 0.5 || cf > 10) warnings.push(`A correction factor of ${cf} is unusual. Double-check it with your care plan.`);
+    }
+
+    if (blocked) {
+      show("–", "Treat your low first");
+    } else {
+      const exact = carbExact + corr;
+      const rounded = Math.round(exact / step) * step;
+      let math;
+      if (corrUsed && corr > 0) {
+        math = `Carbs ${fmtG(carbs)} ÷ ${ratio} = ${carbExact.toFixed(2)}, plus correction (${bg} − ${target}) ÷ ${cf} = ${corr.toFixed(2)}. Total ${exact.toFixed(2)}, rounded to ${rounded.toFixed(d)} units`;
+      } else if (carbs) {
+        math = `${fmtG(carbs)} g ÷ ${ratio} = ${exact.toFixed(2)} units, rounded to ${rounded.toFixed(d)}`;
+      } else {
+        math = "units";
+      }
+      show(rounded.toFixed(d), math);
+      if (rounded > 20) warnings.push("This is a large dose. Double-check your carb counts, portions and blood sugar reading before taking it.");
+    }
+  }
+  $("warnings").innerHTML =
+    dangers.map(w => `<div class="danger">${esc(w)}</div>`).join("") +
+    warnings.map(w => `<div class="warning">${esc(w)}</div>`).join("");
+}
+
+$("chips").addEventListener("click", e => {
+  const b = e.target.closest("[data-cat]"); if (!b) return;
+  cat = b.dataset.cat; renderChips(); renderResults();
+});
+$("q").addEventListener("input", renderResults);
+$("results").addEventListener("click", e => {
+  const b = e.target.closest("[data-i]"); if (!b) return;
+  const f = FOODS[+b.dataset.i]; addItem(f[0], f[1], f[2], f[3], f[5]);
+});
+$("customForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const name = $("cName").value.trim() || "Custom item";
+  const carbs = parseFloat($("cCarbs").value);
+  const fibre = parseFloat($("cFibre").value) || 0;
+  if (!(carbs >= 0)) { $("cCarbs").focus(); return; }
+  addItem(name, "1 serving (label)", carbs, Math.min(fibre, carbs), "");
+  $("cName").value = ""; $("cCarbs").value = ""; $("cFibre").value = ""; $("cName").focus();
+});
+$("meal").addEventListener("click", e => {
+  const t = e.target;
+  if (t.dataset.inc !== undefined) meal[+t.dataset.inc].qty += 0.5;
+  else if (t.dataset.dec !== undefined) {
+    const m = meal[+t.dataset.dec]; m.qty -= 0.5;
+    if (m.qty <= 0) meal.splice(+t.dataset.dec, 1);
+  } else if (t.dataset.rm !== undefined) meal.splice(+t.dataset.rm, 1);
+  else return;
+  renderMeal();
+});
+$("ratio").addEventListener("input", () => { store("icr", $("ratio").value); calc(); });
+$("round").addEventListener("change", () => { store("round", $("round").value); calc(); });
+$("fibre").addEventListener("change", () => { store("fibre", $("fibre").checked ? "1" : "0"); renderMeal(); });
+$("ack").addEventListener("change", () => { store("ack", $("ack").checked ? "1" : ""); calc(); });
+$("bg").addEventListener("input", calc);
+$("target").addEventListener("input", () => { store("target", $("target").value); calc(); });
+$("cf").addEventListener("input", () => { store("cf", $("cf").value); calc(); });
+$("clear").addEventListener("click", () => { meal = []; renderMeal(); });
+$("copy").addEventListener("click", async () => {
+  const lines = meal.map(m => `${m.name} x${m.qty} (${m.serving}): ${fmtG(itemCarbs(m))} g`);
+  const corrLine = $("ack").checked && $("bg").value
+    ? `\nBlood sugar ${$("bg").value} mmol/L, target ${$("target").value}, correction factor ${$("cf").value}\nCorrection dose: ${$("tCorr").textContent}`
+    : "";
+  const text = `${lines.join("\n")}\n${$("tUsedLabel").textContent}: ${$("tUsed").textContent}\nRatio 1:${$("ratio").value}\nCarb dose: ${$("tCarbDose").textContent}${corrLine}\nTotal dose: ${$("dose").textContent} units`;
+  const btn = $("copy");
+  try { await navigator.clipboard.writeText(text); btn.textContent = "Copied"; }
+  catch (e) { btn.textContent = "Copy not available"; }
+  setTimeout(() => btn.textContent = "Copy summary", 1500);
+});
+
+const savedRatio = load("icr"); if (savedRatio) $("ratio").value = savedRatio;
+const savedRound = load("round"); if (savedRound) $("round").value = savedRound;
+if (load("fibre") === "0") $("fibre").checked = false;
+if (load("ack") === "1") $("ack").checked = true;
+const savedTarget = load("target"); if (savedTarget) $("target").value = savedTarget;
+const savedCf = load("cf"); if (savedCf) $("cf").value = savedCf;
+renderChips(); renderResults(); renderMeal();
+</script>
+</body>
+</html>
