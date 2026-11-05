@@ -8,7 +8,7 @@ A Canadian carb-to-insulin calculator for people living with diabetes.
 
 ## What it does
 
-- **Carb counting:** search 85+ common foods through a dropdown (Canadian servings in mL) or add your own from a Nutrition Facts table.
+- **Carb counting:** search 70+ common foods through a dropdown (Canadian servings in mL) or add your own from a Nutrition Facts table.
 - **Fibre subtraction:** counts available carbohydrate (total carbs minus fibre), following Diabetes Canada's carb counting method. You can turn this off.
 - **Glycemic index badges:** low, medium and high GI tags from Diabetes Canada's Glycemic Index Food Guide.
 - **Mealtime dose:** carbs ÷ your insulin-to-carb ratio, rounded to what your pen or pump can deliver (1, 0.5, 0.1 or 0.05 units).
