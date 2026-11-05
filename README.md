@@ -2,7 +2,7 @@
 
 A Canadian carb-to-insulin calculator for people living with diabetes.
 
-**Live app:** https://YOUR-USERNAME.github.io/mybolusbud/
+**Live app:** https://shamarkea.github.io/mybolusbud
 
 ![Screenshot of MyBolusBud](screenshot.png)
 
