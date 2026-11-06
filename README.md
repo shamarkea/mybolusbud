@@ -27,6 +27,7 @@ HTML, CSS and plain JavaScript in a single file. No frameworks or build step. Ho
 
 ## Sources
 
+- Diabetes Canada: [Resources for People with Diabetes]_(https://www.diabetes.ca/for-professionals/patient-resources/resources-for-people-with-diabetes)  
 - Diabetes Canada: [Basic Carbohydrate Counting](https://diabetes.ca/managing-my-diabetes/tools---resources/basic-carbohydrate-counting) (07/25, 2023 Clinical Practice Guidelines)
 - Diabetes Canada: [Glycemic Index Food Guide](https://www.diabetes.ca/resources/tools-resources/the-glycemic-index-(gi)) (07/25)
 - Diabetes Canada: [Lows and Highs: Blood Sugar Levels](https://www.diabetes.ca/DiabetesCanadaWebsite/media/Managing-My-Diabetes/Tools%20and%20Resources/lows-and-highs-blood-sugar-levels.pdf?ext=.pdf)
