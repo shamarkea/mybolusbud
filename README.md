@@ -1,6 +1,6 @@
 # MyBolusBud 🍁
 
-A Canadian carb-to-insulin calculator for people living with diabetes.
+A Carb-to-Insulin calculator for people living with diabetes.
 
 **Live app:** https://shamarkea.github.io/mybolusbud
 
