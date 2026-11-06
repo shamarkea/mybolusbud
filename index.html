@@ -100,7 +100,7 @@
         <svg viewBox="0 0 100 100" aria-hidden="true"><polygon fill="#fff" points="50,5 57,20 66,15 63,38 76,26 80,33 93,30 88,45 95,50 75,63 78,72 55,68 53,95 47,95 45,68 22,72 25,63 5,50 12,45 7,30 20,33 24,26 37,38 34,15 43,20"/></svg>
         <h1>MyBolusBud</h1>
       </div>
-      <p class="tagline">A Canadian carb-to-insulin calculator for people living with diabetes.</p>
+      <p class="tagline">A Carb-to-Insulin calculator for people living with Diabetes.</p>
       <div class="hero-disclaimer" role="note">
         <span class="warn-icon" aria-hidden="true">!</span>
         <div><strong>NOT MEDICAL ADVICE</strong>This tool does not replace your doctor or diabetes care team. They must set your ratio, target and correction factor.</div>
@@ -127,6 +127,12 @@
           <option value="0.1">0.1 unit</option>
         </select>
       </div>
+      <div class="line">
+        Blood sugar units <select id="units" aria-label="Blood sugar units">
+          <option value="mmol">mmol/L (Canada)</option>
+          <option value="mgdl">mg/dL (U.S.)</option>
+        </select>
+      </div>
       <details id="corrBox">
         <summary>Add a correction for high blood sugar</summary>
         <div class="corr">
@@ -134,7 +140,8 @@
           <label>Target<input type="number" id="target" min="0" step="0.1" value="6"></label>
           <label>Correction factor<input type="number" id="cf" min="0" step="0.1" value="4"></label>
         </div>
-        <p class="small">Correction factor = how much 1 unit lowers your blood sugar, in mmol/L.</p>
+        <p class="small" id="conv" style="color:var(--ink)"></p>
+        <p class="small" id="cfHint">Correction factor = how much 1 unit lowers your blood sugar, in mmol/L.</p>
       </details>
     </div>
   </section>
@@ -166,8 +173,9 @@
   </section>
 
   <section class="step links">
-    <h3>Canadian resources</h3>
+    <h3>Resources</h3>
     <ul>
+      <li><a href="https://www.diabetes.ca/for-professionals/patient-resources/resources-for-people-with-diabetes">Resources for People with Diabetes</a> (Diabetes Canada)</li>
       <li><a href="https://diabetes.ca/managing-my-diabetes/tools---resources/basic-carbohydrate-counting">Basic Carbohydrate Counting</a> (Diabetes Canada)</li>
       <li><a href="https://www.diabetes.ca/resources/tools-resources/the-glycemic-index-(gi)">Glycemic Index Food Guide</a> (Diabetes Canada)</li>
       <li><a href="https://www.diabetes.ca/DiabetesCanadaWebsite/media/Managing-My-Diabetes/Tools%20and%20Resources/lows-and-highs-blood-sugar-levels.pdf?ext=.pdf">Lows and Highs: Blood Sugar Levels</a> (Diabetes Canada)</li>
@@ -261,8 +269,35 @@ function render() {
   calc();
 }
 
+// Blood sugar units. 1 mmol/L = 18 mg/dL. Thresholds: low below 4 mmol/L (70 mg/dL), ketone check at 14 mmol/L (250 mg/dL).
+const UNITS = {
+  mmol: { name: "mmol/L", low: 4, high: 14, step: 0.1 },
+  mgdl: { name: "mg/dL", low: 70, high: 250, step: 1 }
+};
+const MGDL_PER_MMOL = 18;
+let curUnit = "mmol";
+function convertVal(v, to) {
+  if (!(v > 0)) return "";
+  return to === "mgdl" ? Math.round(v * MGDL_PER_MMOL) : Math.round(v / MGDL_PER_MMOL * 10) / 10;
+}
+function applyUnitLabels() {
+  const u = UNITS[curUnit];
+  $("bg").placeholder = u.name;
+  ["bg", "target", "cf"].forEach(id => $(id).step = u.step);
+  $("cfHint").textContent = `Correction factor = how much 1 unit lowers your blood sugar, in ${u.name}.`;
+}
+function switchUnits(to) {
+  if (to === curUnit) return;
+  ["bg", "target", "cf"].forEach(id => { $(id).value = convertVal(parseFloat($(id).value), to); });
+  curUnit = to;
+  store("units", to); store("target", $("target").value); store("cf", $("cf").value);
+  applyUnitLabels();
+  calc();
+}
+
 function calc() {
   const ack = $("ack").checked;
+  const u = UNITS[curUnit];
   $("settings").classList.toggle("off", !ack);
   const ratio = parseFloat($("ratio").value), step = parseFloat($("round").value);
   const dp = step >= 1 ? 0 : 1;
@@ -270,11 +305,13 @@ function calc() {
   const bg = parseFloat($("bg").value), target = parseFloat($("target").value), cf = parseFloat($("cf").value);
   const warn = [], danger = [];
   let dose = "–", math = "";
+  const other = curUnit === "mmol" ? "mgdl" : "mmol";
+  $("conv").textContent = bg > 0 ? `${bg} ${u.name} = ${convertVal(bg, other)} ${UNITS[other].name}` : "";
 
   if (!ack) math = "Tick the box in step 1 to see your dose.";
   else if (!(ratio > 0)) math = "Enter your ratio in step 1.";
-  else if (bg > 0 && bg < 4) {
-    danger.push("Your blood sugar is low. Treat it first: 15 g of fast-acting carbs (like glucose tablets or 150 mL of juice), wait 15 minutes, recheck, and repeat until you're above 4 mmol/L. Don't take insulin for this meal until you've followed your care team's plan.");
+  else if (bg > 0 && bg < u.low) {
+    danger.push(`Your blood sugar is low. Treat it first: 15 g of fast-acting carbs (like glucose tablets or 150 mL of juice), wait 15 minutes, recheck, and repeat until you're above ${u.low} ${u.name}. Don't take insulin for this meal until you've followed your care team's plan.`);
     math = "Treat your low first.";
   } else {
     const carbDose = carbs / ratio;
@@ -282,7 +319,7 @@ function calc() {
     if (bg > 0 && target > 0 && cf > 0) {
       corr = Math.max(0, (bg - target) / cf);
       if (bg < target) warn.push("You're below target, so no correction was added. Ask your care team if you should lower your meal dose.");
-      if (bg >= 14) warn.push("Blood sugar is 14 mmol/L or higher. Check for ketones and follow your sick-day plan.");
+      if (bg >= u.high) warn.push(`Blood sugar is ${u.high} ${u.name} or higher. Check for ketones and follow your sick-day plan.`);
     }
     const total = carbDose + corr;
     const rounded = Math.round(total / step) * step;
@@ -323,7 +360,15 @@ $("meal").addEventListener("click", e => {
 $("bg").addEventListener("input", calc);
 $("ack").addEventListener("change", () => { store("ack", $("ack").checked ? "1" : ""); calc(); });
 
+$("units").addEventListener("change", () => switchUnits($("units").value));
+const savedUnits = load("units");
+if (savedUnits === "mgdl") {
+  curUnit = "mgdl"; $("units").value = "mgdl";
+  // Convert the mmol/L defaults; saved values below were already stored in mg/dL.
+  $("target").value = convertVal(6, "mgdl"); $("cf").value = convertVal(4, "mgdl");
+}
 ["ratio","round","target","cf"].forEach(id => { const v = load(id); if (v) $(id).value = v; });
+applyUnitLabels();
 if (load("ack") === "1") $("ack").checked = true;
 buildDropdown();
 render();
