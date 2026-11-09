@@ -17,8 +17,11 @@
   .brand { display: flex; align-items: center; gap: 10px; }
   .brand svg { width: 28px; height: 28px; flex-shrink: 0; }
   h1 { font-family: "DM Serif Display", Georgia, serif; font-weight: 400; font-size: 24px; margin: 0; }
-  .disc { margin: 6px 0 0; font-size: 13.5px; opacity: .95; }
+  .disc { margin: 12px 0 0; font-size: 14px; line-height: 1.45; background: #fff3c4; color: #5a3d00; border-left: 4px solid #f5b800; border-radius: 8px; padding: 10px 12px; }
   main.wrap { padding-top: 16px; }
+  .intro p { margin: 0; font-size: 15px; }
+  .intro ol { margin: 10px 0; padding-left: 20px; font-size: 15px; }
+  .intro li { margin: 4px 0; }
   .card { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
   .card h2 { font-size: 17px; margin: 0 0 12px; }
   .opt { font-weight: 400; color: var(--muted); font-size: 14px; }
@@ -109,11 +112,22 @@
       <svg viewBox="0 0 100 100" aria-hidden="true"><polygon fill="#fff" points="50,5 57,20 66,15 63,38 76,26 80,33 93,30 88,45 95,50 75,63 78,72 55,68 53,95 47,95 45,68 22,72 25,63 5,50 12,45 7,30 20,33 24,26 37,38 34,15 43,20"/></svg>
       <h1>MyBolusBud</h1>
     </div>
-    <p class="disc"><strong>Not medical advice.</strong> Use only the numbers your diabetes care team gave you.</p>
+    <p class="disc" role="note"><strong>NOT medical advice</strong> and is for educational purposes only. Always consult with your healthcare team before making changes to your treatment.</p>
   </div>
 </header>
 
 <main class="wrap">
+  <section class="card intro">
+    <h2>What is MyBolusBud?</h2>
+    <p>A mealtime insulin calculator for people with diabetes who take bolus (mealtime) insulin. It does the carb math for you, using the numbers your care team gave you.</p>
+    <ol>
+      <li><b>Set up once:</b> enter your carb ratio, target blood sugar and correction factor.</li>
+      <li><b>Pick what you're eating</b> from the food list, or type in carbs from a label.</li>
+      <li><b>Add your blood sugar</b> (optional) to correct a high or catch a low.</li>
+    </ol>
+    <p class="small">You get a suggested dose with the math shown. Your settings, foods and doses are saved only in this browser on this device.</p>
+  </section>
+
   <details class="card" id="setup" open>
     <summary><span id="setupTitle">Set up (one time)</span><span class="edit">Edit</span></summary>
     <div class="setup-body">
@@ -211,7 +225,6 @@
 </main>
 
 <footer class="wrap">Not medical advice. Carb values are estimates; check food labels. Not affiliated with Diabetes Canada, Health Canada or Indigenous Services Canada.</footer>
-
 
 <script>
 // group: [[name, serving, carbs g, fibre g], ...]
